@@ -1,0 +1,428 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Radarchart</title>
+</head>
+
+<body>
+
+<canvas id="myCanvas" width="600" height="600" style="border:1px solid #000000; display: none">
+</canvas>
+
+<script>
+
+var messiStats = new Array(0.79,5.71,45.9,85.1,0.40,2.70,0.40,0.58,2.48,5.10,17.6);
+var gerrardStats = new Array(86.2,1.98,.24,.44,.48,.62,1.06,50,2.98,1.51,7.49);
+var alexsandroStats = new Array(2.415,2.22,84.6,1.95,1.37,31.5,1.91,1.44,1.6,1.675,79.48);
+var vandijkStats = new Array(84.2,84.8,1.9,2.6,6.9,0.73,0.87,75.4,4.75,62.6,4.71);
+
+var playerStats = messiStats.slice(0);
+
+function StatInfo(statName,statMin,statMax) {
+	this.statName = statName;
+	this.statMin = statMin;
+	this.statMax = statMax;
+}
+
+
+var fwLabels = new Array();
+fwLabels[0] = new StatInfo("Non-Penalty Goals",0.05,0.65);
+fwLabels[1] = new StatInfo("Strzaly",1.2,4);
+fwLabels[2] = new StatInfo("Celnosc strzalow%",28,56);
+fwLabels[3] = new StatInfo("Celnosc podan%",65,85);
+fwLabels[4] = new StatInfo("Asysty",0.06,0.34);
+fwLabels[5] = new StatInfo("Wykreowane szanse",0.6,2.6);
+fwLabels[6] = new StatInfo("Odbiory i przechwyty",0.5,3.7);
+fwLabels[7] = new StatInfo("Utrata posiadania",3,1);
+fwLabels[8] = new StatInfo("Skutecznosc dryblingów%",34,70);
+fwLabels[9] = new StatInfo("Udane dryblingi",0.4,2.8);
+fwLabels[10] = new StatInfo("Goal Conversion%",5,23);
+
+var cmLabels = new Array();
+cmLabels[0] = new StatInfo("Celnosc podan%",74,90);
+cmLabels[1] = new StatInfo("Wykreowane szanse",0.4,2);
+cmLabels[2] = new StatInfo("Asysty + NPG",0,0.4);
+cmLabels[3] = new StatInfo("Strzaly",0.3,2.1);
+cmLabels[4] = new StatInfo("Udane dryblingi",0.3,2.1);
+cmLabels[5] = new StatInfo("Utrata posiadania",2.1,0.5);
+cmLabels[6] = new StatInfo("Faule",2.6,0.6);
+cmLabels[7] = new StatInfo("Odbiory/proby%",50,74);
+cmLabels[8] = new StatInfo("Udane odbiory PAdj",1.2,4);
+cmLabels[9] = new StatInfo("Przechwyty PAdj",1,3.4);
+cmLabels[10] = new StatInfo("Celne dlugie podania",1.2,6);
+
+var fbLabels = new Array();
+fbLabels[0] = new StatInfo("Udane odbiory PAdj",1,3.4);
+fbLabels[1] = new StatInfo("Przechwyty PAdj",1,3);
+fbLabels[2] = new StatInfo("Celnosc podan%",70,86);
+fbLabels[3] = new StatInfo("Wykreowane szanse",0.4,1.6);
+fbLabels[4] = new StatInfo("Celne dosrodkowania",0.4,1.2);
+fbLabels[5] = new StatInfo("Celnosc dosrodkowan%",13,33);
+fbLabels[6] = new StatInfo("Udane dryblingi",0.4,1.6);
+fbLabels[7] = new StatInfo("Utrata posiadania",1.4,0.2);
+fbLabels[8] = new StatInfo("Wygrane w powietrzu",0.5,2.5);
+fbLabels[9] = new StatInfo("Faule",2.1,0.5);
+fbLabels[10] = new StatInfo("Odbiory/proby%",60,84);
+
+var cbLabels = new Array();
+cbLabels[0] = new StatInfo("Celnosc podan%",70,90);
+cbLabels[1] = new StatInfo("Odbiory/proby%",64,88);
+cbLabels[2] = new StatInfo("Udane odbiory PAdj",1,3);
+cbLabels[3] = new StatInfo("Przechwyty PAdj",1,3.4);
+cbLabels[4] = new StatInfo("Wybicia PAdj",2.8,8);
+cbLabels[5] = new StatInfo("Bloki/strzaly",0.033,0.085);
+cbLabels[6] = new StatInfo("Faule",1.86,0.42);
+cbLabels[7] = new StatInfo("Wygrane w powietrzu%",52,76);
+cbLabels[8] = new StatInfo("Wygrane w powietrzu",1.2,4);
+cbLabels[9] = new StatInfo("Celnosc dlugich podan%",40,76);
+cbLabels[10] = new StatInfo("Celne dlugie podania",2,6.4);
+
+
+var curStats = fwLabels;
+
+var canvasHeight = 600;
+var canvasWidth = 600;
+playerColor = "rgba(0, 0, 0, 0.7)";
+playerColor1 = "rgba(0, 0, 0, 0.7)";
+playerColor2 = "rgba(0, 0, 0, 0.7)";
+templatename = "brak"
+templatex = 261;
+labelFontSize = 10;
+valueFontSize = 10;
+numrings = 5;
+rotOffset = -Math.PI/2;//(fwLabels.length)/2;
+
+
+function reassign() {
+
+	canvasHeight = parseInt(document.getElementById("cheight").value); 
+	canvasWidth = parseInt(document.getElementById("cwidth").value);
+	
+	canvasRed1 = parseInt(document.getElementById("redRGB1").value); 
+	canvasGreen1 = parseInt(document.getElementById("greenRGB1").value);
+	canvasBlue1 = parseInt(document.getElementById("blueRGB1").value);
+	
+	canvasRed2 = parseInt(document.getElementById("redRGB2").value); 
+	canvasGreen2 = parseInt(document.getElementById("greenRGB2").value);
+	canvasBlue2 = parseInt(document.getElementById("blueRGB2").value);
+	
+	playerColor = "rgba(" + canvasRed1 + ", " + canvasGreen1 + ", " + canvasBlue1 + ", 0.7)";
+	
+	playerColor1 = "rgba(" + canvasRed1 + ", " + canvasGreen1 + ", " + canvasBlue1 + ", 1)";
+	
+	playerColor2 = "rgba(" + canvasRed2 + ", " + canvasGreen2 + ", " + canvasBlue2 + ", 1)";
+	
+	curStats = new Array();
+	var count = 0;
+	
+	for(var j = 0; j < 11; j++) {
+	
+		if(document.getElementById("name"+j).value != "") {
+		
+			curStats[count] = new StatInfo(document.getElementById("name"+j).value,
+				parseFloat(document.getElementById("min"+j).value),
+				parseFloat(document.getElementById("max"+j).value));
+			
+			playerStats[count] = parseFloat(document.getElementById("stat"+j).value);
+			
+			if(curStats[count].statName == "Udane odbiory PAdj"
+				|| curStats[count].statName == "Przechwyty PAdj" 
+				|| curStats[count].statName == "Wybicia PAdj") 
+				playerStats[count] = playerStats[count] * 2/(1 + Math.pow(2.71828,(-0.1*(document.getElementById("possession").value-50))));
+			
+			if(curStats[count].statName == "Bloki/strzaly")
+				playerStats[count] = playerStats[count]/document.getElementById("shotsfaced").value;
+				
+			count++;
+		}
+	
+	}
+
+}
+
+function drawPlot() {
+
+reassign();
+
+cx = 0; //x offset
+cy = 0; //y offset
+r = Math.min(canvasWidth,canvasHeight)/2 - 50;
+
+//set canvas size
+var c = document.getElementById("myCanvas");
+c.width = canvasWidth;
+c.height = canvasHeight;
+
+//get context and set it up
+var ctx = c.getContext("2d");
+ctx.fillStyle = "white";
+ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+ctx.translate(canvasWidth/2, canvasHeight/2);
+ctx.imageSmoothingEnabled = true;
+
+//draw rings
+lw = r/(numrings*2);
+ctx.save();
+ctx.strokeStyle="#cdcdcd";
+ctx.lineWidth = lw;
+for(var i = 0; i < numrings; i++) {
+
+	ctx.beginPath();
+	ctx.arc(cx,cy,r/numrings*(i+1)-lw/2,0,2*Math.PI);
+	ctx.closePath();
+	ctx.stroke();
+
+}
+ctx.restore();
+
+var gdots = new Array();
+var rdots = new Array();
+
+//draw radar
+ctx.save();
+ctx.fillStyle = playerColor;
+ctx.beginPath();
+for (var i = 0; i < curStats.length; i++) { 
+	
+	statg = 0;
+	statr = 0;
+	
+	rad = (2*Math.PI/curStats.length)*i + rotOffset;
+	newr = 2*lw + 8*lw*(playerStats[i]-curStats[i].statMin)/(curStats[i].statMax-curStats[i].statMin);//Math.random()*r;
+	if(newr > r) {
+		newr = r;
+		statg = 1;
+	}
+	if(newr < 0) {
+		newr = 0;
+		statr = 1;
+	}
+	
+	newy = newr*Math.sin(rad);
+	newx = newr*Math.cos(rad);
+	
+	if(statg == 1)
+		gdots[gdots.length] = new Array(newx,newy);
+	if(statr == 1)
+		rdots[rdots.length] = new Array(newx,newy);
+		
+	
+	if(i == 0)
+		ctx.moveTo(cx+newx, cy+newy);
+	else
+		ctx.lineTo(cx+newx, cy+newy);
+
+}
+
+ctx.closePath();
+ctx.fill();
+ctx.restore();
+
+//draw info
+ctx.save();
+ctx.fillStyle = "black";
+ctx.font = "bold 15px Calibri";
+ctx.fillText(document.getElementById("playerName").value + ", " + document.getElementById("playerAge").value, -280, -280);
+ctx.fillText(document.getElementById("playerSeason").value, -280, -263);
+ctx.fillText(document.getElementById("playerClub").value, -280, 263);
+ctx.fillText(document.getElementById("playerLeague").value, -280, 280);
+ctx.fillText("via whoscored", 200, 280);
+ctx.fillText(templatename, templatex, -280);
+ctx.restore();
+
+ctx.save();
+ctx.fillStyle = playerColor1;
+ctx.beginPath();
+ctx.fillRect(-280,227,20,20)
+ctx.closePath();
+ctx.fill();
+ctx.restore();
+
+ctx.save();
+ctx.fillStyle = playerColor2;
+ctx.beginPath();
+ctx.fillRect(-260,227,20,20)
+ctx.closePath();
+ctx.fill();
+ctx.restore();
+
+//draw labels
+ctx.save();
+ctx.fillStyle = "black";
+ctx.font = "bold " + labelFontSize + "px Arial";
+ctx.textAlign = "center";
+
+for (var i = 0; i < curStats.length; i++) { 
+
+	rad = (2*Math.PI/curStats.length)*i + rotOffset;
+
+	ctx.save();
+	
+	if((rad < Math.PI)&&(rad > 0)) {
+		ctx.rotate(rad-Math.PI/2);
+		ctx.fillText(curStats[i].statName, 0, r+20);
+		for(var j = 0; j < 9; j++) {
+			ctx.font = "bold " + valueFontSize + "px Arial";
+			ctx.fillText(Math.round((curStats[i].statMin+j*(curStats[i].statMax-curStats[i].statMin)/8)*1000)/1000, 0, (r/(numrings*2))*(j+1)+lw+3);
+		}
+	} else {
+		ctx.rotate(rad+Math.PI/2);
+		ctx.fillText(curStats[i].statName, 0, -r-15);
+		for(var j = 0; j < 9; j++) {
+			ctx.font = "bold " + valueFontSize + "px Arial";
+			ctx.fillText(Math.round((curStats[i].statMin+j*(curStats[i].statMax-curStats[i].statMin)/8)*1000)/1000, 0, -(r/(numrings*2))*(j+1)-lw+valueFontSize/2);
+		}
+	}
+	
+	
+	ctx.restore();
+
+}
+
+ctx.restore();
+
+var dataURL = c.toDataURL();
+
+document.getElementById('canvasImg').src = dataURL;
+
+}
+
+function fillFW() {
+	for(var i = 0; i < fwLabels.length; i++) {
+		document.getElementById('name'+i).value = fwLabels[i].statName;
+		document.getElementById('min'+i).value = fwLabels[i].statMin;
+		document.getElementById('max'+i).value = fwLabels[i].statMax;
+		document.getElementById('stat'+i).value = messiStats[i];
+	}
+	templatename = "FW/AM";
+	templatex = 242;
+	drawPlot();
+}
+
+function fillCM() {
+	for(var i = 0; i < cmLabels.length; i++) {
+		document.getElementById('name'+i).value = cmLabels[i].statName;
+		document.getElementById('min'+i).value = cmLabels[i].statMin;
+		document.getElementById('max'+i).value = cmLabels[i].statMax;
+		document.getElementById('stat'+i).value = gerrardStats[i];
+	}
+	templatename = "CM";
+	templatex = 269;
+	drawPlot();
+}
+
+function fillFB() {
+	for(var i = 0; i < fbLabels.length; i++) {
+		document.getElementById('name'+i).value = fbLabels[i].statName;
+		document.getElementById('min'+i).value = fbLabels[i].statMin;
+		document.getElementById('max'+i).value = fbLabels[i].statMax;
+		document.getElementById('stat'+i).value = alexsandroStats[i];
+	}
+	templatename = "FB";
+	templatex = 274;
+	drawPlot();
+}
+
+function fillCB() {
+	for(var i = 0; i < cbLabels.length; i++) {
+		document.getElementById('name'+i).value = cbLabels[i].statName;
+		document.getElementById('min'+i).value = cbLabels[i].statMin;
+		document.getElementById('max'+i).value = cbLabels[i].statMax;
+		document.getElementById('stat'+i).value = vandijkStats[i];
+	}
+	templatename = "CB";
+	templatex = 273;
+	drawPlot();
+}
+
+</script>
+
+
+<div id="numbers">
+<div style='float:left'>
+<table>
+<thead>
+<tr><td>stat name</td><td>min</td><td>max</td><td>val</td></tr>
+</thead>
+<tbody>
+<tr><td><input id="name0" type="text" class="slabel" size="13"></td><td><input id="min0" type="text" class="snumber" size="1"></td><td><input id="max0" type="text" class="snumber" size="1"></td><td><input id="stat0" type="textarea" size="1"></td></tr>
+<tr><td><input id="name1" type="text" class="slabel" size="13"></td><td><input id="min1" type="text" class="snumber" size="1"></td><td><input id="max1" type="text" class="snumber" size="1"></td><td><input id="stat1" type="textarea" size="1"></td></tr>
+<tr><td><input id="name2" type="text" class="slabel" size="13"></td><td><input id="min2" type="text" class="snumber" size="1"></td><td><input id="max2" type="text" class="snumber" size="1"></td><td><input id="stat2" type="textarea" size="1"></td></tr>
+<tr><td><input id="name3" type="text" class="slabel" size="13"></td><td><input id="min3" type="text" class="snumber" size="1"></td><td><input id="max3" type="text" class="snumber" size="1"></td><td><input id="stat3" type="textarea" size="1"></td></tr>
+<tr><td><input id="name4" type="text" class="slabel" size="13"></td><td><input id="min4" type="text" class="snumber" size="1"></td><td><input id="max4" type="text" class="snumber" size="1"></td><td><input id="stat4" type="textarea" size="1"></td></tr>
+<tr><td><input id="name5" type="text" class="slabel" size="13"></td><td><input id="min5" type="text" class="snumber" size="1"></td><td><input id="max5" type="text" class="snumber" size="1"></td><td><input id="stat5" type="textarea" size="1"></td></tr>
+<tr><td><input id="name6" type="text" class="slabel" size="13"></td><td><input id="min6" type="text" class="snumber" size="1"></td><td><input id="max6" type="text" class="snumber" size="1"></td><td><input id="stat6" type="textarea" size="1"></td></tr>
+<tr><td><input id="name7" type="text" class="slabel" size="13"></td><td><input id="min7" type="text" class="snumber" size="1"></td><td><input id="max7" type="text" class="snumber" size="1"></td><td><input id="stat7" type="textarea" size="1"></td></tr>
+<tr><td><input id="name8" type="text" class="slabel" size="13"></td><td><input id="min8" type="text" class="snumber" size="1"></td><td><input id="max8" type="text" class="snumber" size="1"></td><td><input id="stat8" type="textarea" size="1"></td></tr>
+<tr><td><input id="name9" type="text" class="slabel" size="13"></td><td><input id="min9" type="text" class="snumber" size="1"></td><td><input id="max9" type="text" class="snumber" size="1"></td><td><input id="stat9" type="textarea" size="1"></td></tr>
+<tr><td><input id="name10" type="text" class="slabel" size="13"></td><td><input id="min10" type="text" class="snumber" size="1"></td><td><input id="max10" type="text" class="snumber" size="1"></td><td><input id="stat10" type="textarea" size="1"></td></tr>
+</tbody>
+</table>
+<span class="ilabel">possession: </span><input id="possession" value="50" type="textarea" size="1">
+<br>
+<span class="ilabel">shotsfaced: </span><input id="shotsfaced" value="12" type="textarea" size="1">
+<br>
+<br>
+<button onclick="fillFW()" class="button template">FW</button> &nbsp&nbsp|&nbsp&nbsp 
+<button onclick="fillCM()" class="button template">CM</button> &nbsp&nbsp|&nbsp&nbsp 
+<button onclick="fillFB()" class="button template">FB</button> &nbsp&nbsp|&nbsp&nbsp 
+<button onclick="fillCB()" class="button template">CB</button>
+<br>
+<br>
+<button onclick="drawPlot()" class="button">Draw new plot</button>
+<br>
+<br>
+<span class="ilabel">name: </span><input id="playerName" value="John Doe" type="text" class="slabel" size="10">
+<br>
+<span class="ilabel">birthdate: </span><input id="playerAge" value="12-12-1992" type="text" class="slabel" size="10">
+<br>
+<span class="ilabel">season: </span><input id="playerSeason" value="17/18" type="text" class="slabel" size="10">
+<br>
+<span class="ilabel">club: </span><input id="playerClub" value="Liverpool" type="text" class="slabel" size="20">
+<br>
+<span class="ilabel">league: </span><input id="playerLeague" value="Premier League" type="text" class="slabel" size="20">
+<br>
+<br>
+color1
+<br>
+<span class="ilabel">R: </span><input id="redRGB1" value="205" type="textarea" size="1">
+<span class="ilabel">G: </span><input id="greenRGB1" value="0" type="textarea" size="1">
+<span class="ilabel">B: </span><input id="blueRGB1" value="30" type="textarea" size="1">
+<br>
+<br>
+color2
+<br>
+<span class="ilabel">R: </span><input id="redRGB2" value="60" type="textarea" size="1">
+<span class="ilabel">G: </span><input id="greenRGB2" value="180" type="textarea" size="1">
+<span class="ilabel">B: </span><input id="blueRGB2" value="180" type="textarea" size="1">
+<br>
+<br>
+<span class="ilabel">width: </span><input id="cwidth" value="600" type="textarea" size="1">
+<br>
+<span class="ilabel">height: </span><input id="cheight" value="600" type="textarea" size="1">
+
+</div>
+
+<div style='float:left'>
+<img id="canvasImg">
+
+<script>
+
+fillFW();
+
+var currentel = null;
+
+
+$('input').focus(function(event) {
+	currentel = this;
+	setTimeout(function(){currentel.setSelectionRange(0, 9999);},30);
+
+});
+
+
+</script>
+</div>
+</div>
+
+<div style="background: rgba(135, 206, 235, 0.7); border: 3px double; box-sizing: content-box; display: none; pointer-events: none; position: absolute; z-index: 32767;"></div><textarea style="border-radius: 0px; margin: 0px; opacity: 0; position: absolute; top: -32767px; z-index: 32767;"></textarea><table style="border-collapse: collapse; visibility: hidden;"><tr><td style="border: 1px solid; padding: 0px; width: 1px;"></td></tr></table></body></html>
