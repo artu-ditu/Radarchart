@@ -1,2 +1,2 @@
 # Radarchart
-Przerobiony do własnych potrzeb generator wykresów radarowych znaleziony w internecie.
+Przerobiony do własnych potrzeb (wizualizacja statystyk piłkarskich) generator wykresów radarowych znaleziony w internecie.
