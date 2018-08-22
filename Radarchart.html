@@ -7,7 +7,7 @@
 
 <body>
 
-<canvas id="myCanvas" width="700" height="700" style="border:1px solid #000000; display: none">
+<canvas id="myCanvas" width="700" height="800" style="border:1px solid #000000; display: none">
 </canvas>
 
 <script>
@@ -25,6 +25,14 @@ function StatInfo(statName,statMin,statMax) {
 	this.statMax = statMax;
 }
 
+function getWidthOfText(txt, font){
+    if(getWidthOfText.c === undefined){
+        getWidthOfText.c=document.createElement('canvas');
+        getWidthOfText.ctx=getWidthOfText.c.getContext('2d');
+    }
+    getWidthOfText.ctx.font = font;
+    return getWidthOfText.ctx.measureText(txt).width;
+}
 
 var fwLabels = new Array();
 fwLabels[0] = new StatInfo("Non-Penalty Goals",0.16,0.72);
@@ -104,17 +112,16 @@ cbLabels[12] = new StatInfo("Celne dlugie podania",2,6.4);
 
 var curStats = fwLabels;
 
-var canvasHeight = 700;
+var canvasHeight = 800;
 var canvasWidth = 700;
 playerColor = "rgba(0, 0, 0, 0.7)";
-playerColor1 = "rgba(0, 0, 0, 0.7)";
-playerColor2 = "rgba(0, 0, 0, 0.7)";
+playerColor1noalpha = "rgba(0, 0, 0, 0.7)";
+playerColor2noalpha = "rgba(0, 0, 0, 0.7)";
 templatename = "brak"
-templatex = 261;
 labelFontSize = 11;
 valueFontSize = 10;
 numrings = 5;
-rotOffset = -Math.PI/2;//(fwLabels.length)/2;
+rotOffset = -Math.PI/2;
 
 
 function reassign() {
@@ -130,11 +137,13 @@ function reassign() {
 	canvasGreen2 = parseInt(document.getElementById("greenRGB2").value);
 	canvasBlue2 = parseInt(document.getElementById("blueRGB2").value);
 	
-	playerColor = "rgba(" + canvasRed1 + ", " + canvasGreen1 + ", " + canvasBlue1 + ", 0.7)";
+	playerColor1 = "rgba(" + canvasRed1 + ", " + canvasGreen1 + ", " + canvasBlue1 + ", 0.8)";
 	
-	playerColor1 = "rgba(" + canvasRed1 + ", " + canvasGreen1 + ", " + canvasBlue1 + ", 1)";
+	playerColor2 = "rgba(" + canvasRed2 + ", " + canvasGreen2 + ", " + canvasBlue2 + ", 0.8)";
 	
-	playerColor2 = "rgba(" + canvasRed2 + ", " + canvasGreen2 + ", " + canvasBlue2 + ", 1)";
+	playerColor1noalpha = "rgba(" + canvasRed1 + ", " + canvasGreen1 + ", " + canvasBlue1 + ", 1)";
+	
+	playerColor2noalpha = "rgba(" + canvasRed2 + ", " + canvasGreen2 + ", " + canvasBlue2 + ", 1)";
 	
 	curStats = new Array();
 	var count = 0;
@@ -166,149 +175,141 @@ function reassign() {
 
 function drawPlot() {
 
-reassign();
+	reassign();
 
-cx = 0; //x offset
-cy = 0; //y offset
-r = Math.min(canvasWidth,canvasHeight)/2 - 50;
+	cx = 0; //x offset
+	cy = 25; //y offset
+	r = Math.min(canvasWidth,canvasHeight)/2 - 50;
 
-//set canvas size
-var c = document.getElementById("myCanvas");
-c.width = canvasWidth;
-c.height = canvasHeight;
+	//set canvas size
+	var c = document.getElementById("myCanvas");
+	c.width = canvasWidth;
+	c.height = canvasHeight;
 
-//get context and set it up
-var ctx = c.getContext("2d");
-ctx.fillStyle = "white";
-ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-ctx.translate(canvasWidth/2, canvasHeight/2);
-ctx.imageSmoothingEnabled = true;
+	//get context and set it up
+	var ctx = c.getContext("2d");
+	ctx.fillStyle = "white";
+	ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+	ctx.translate(canvasWidth/2, canvasHeight/2);
+	ctx.imageSmoothingEnabled = true;
 
-//draw rings
-lw = r/(numrings*2);
-ctx.save();
-ctx.strokeStyle="#cdcdcd";
-ctx.lineWidth = lw;
-for(var i = 0; i < numrings; i++) {
-
-	ctx.beginPath();
-	ctx.arc(cx,cy,r/numrings*(i+1)-lw/2,0,2*Math.PI);
-	ctx.closePath();
-	ctx.stroke();
-
-}
-ctx.restore();
-
-var gdots = new Array();
-var rdots = new Array();
-
-//draw radar
-ctx.save();
-ctx.fillStyle = playerColor;
-ctx.beginPath();
-for (var i = 0; i < curStats.length; i++) { 
-	
-	statg = 0;
-	statr = 0;
-	
-	rad = (2*Math.PI/curStats.length)*i + rotOffset;
-	newr = 2*lw + 8*lw*(playerStats[i]-curStats[i].statMin)/(curStats[i].statMax-curStats[i].statMin);//Math.random()*r;
-	if(newr > r) {
-		newr = r;
-		statg = 1;
-	}
-	if(newr < 0) {
-		newr = 0;
-		statr = 1;
-	}
-	
-	newy = newr*Math.sin(rad);
-	newx = newr*Math.cos(rad);
-	
-	if(statg == 1)
-		gdots[gdots.length] = new Array(newx,newy);
-	if(statr == 1)
-		rdots[rdots.length] = new Array(newx,newy);
-		
-	
-	if(i == 0)
-		ctx.moveTo(cx+newx, cy+newy);
-	else
-		ctx.lineTo(cx+newx, cy+newy);
-
-}
-
-ctx.closePath();
-ctx.fill();
-ctx.restore();
-
-//draw info
-ctx.save();
-ctx.fillStyle = "black";
-ctx.font = "bold 15px Calibri";
-ctx.fillText(document.getElementById("playerName").value + ", " + document.getElementById("playerAge").value, -330, -330);
-ctx.fillText(document.getElementById("playerSeason").value, -330, -313);
-ctx.fillText(document.getElementById("playerClub").value, -330, 313);
-ctx.fillText(document.getElementById("playerLeague").value, -330, 330);
-ctx.fillText("via whoscored", 250, 330);
-ctx.fillText(templatename, templatex, -330);
-ctx.restore();
-
-ctx.save();
-ctx.fillStyle = playerColor1;
-ctx.beginPath();
-ctx.fillRect(-330,277,20,20)
-ctx.closePath();
-ctx.fill();
-ctx.restore();
-
-ctx.save();
-ctx.fillStyle = playerColor2;
-ctx.beginPath();
-ctx.fillRect(-310,277,20,20)
-ctx.closePath();
-ctx.fill();
-ctx.restore();
-
-//draw labels
-ctx.save();
-ctx.fillStyle = "black";
-ctx.font = "bold " + labelFontSize + "px Arial";
-ctx.textAlign = "center";
-
-for (var i = 0; i < curStats.length; i++) { 
-
-	rad = (2*Math.PI/curStats.length)*i + rotOffset;
-
+	//draw rings
+	lw = r/(numrings*2);
 	ctx.save();
+	ctx.strokeStyle = "#cdcdcd";
+	ctx.lineWidth = lw;
 	
-	if((rad < Math.PI)&&(rad > 0)) {
-		ctx.rotate(rad-Math.PI/2);
-		ctx.fillText(curStats[i].statName, 0, r+20);
-		for(var j = 0; j < 9; j++) {
-			ctx.font = "bold " + valueFontSize + "px Arial";
-			ctx.fillText(Math.round((curStats[i].statMin+j*(curStats[i].statMax-curStats[i].statMin)/8)*1000)/1000, 0, (r/(numrings*2))*(j+1)+lw+3);
-		}
-	} else {
-		ctx.rotate(rad+Math.PI/2);
-		ctx.fillText(curStats[i].statName, 0, -r-15);
-		for(var j = 0; j < 9; j++) {
-			ctx.font = "bold " + valueFontSize + "px Arial";
-			ctx.fillText(Math.round((curStats[i].statMin+j*(curStats[i].statMax-curStats[i].statMin)/8)*1000)/1000, 0, -(r/(numrings*2))*(j+1)-lw+valueFontSize/2);
-		}
+	for(var i = 0; i < numrings; i++) {
+
+		ctx.beginPath();
+		ctx.arc(cx,cy,r/5*(i+1)-lw/2,0,2*Math.PI);
+		ctx.closePath();
+		ctx.stroke();
+
 	}
-	
 	
 	ctx.restore();
 
-}
+	var gdots = new Array();
+	var rdots = new Array();
+	
+	//draw radar
+	ctx.save();
+	ctx.fillStyle = playerColor1;
+	ctx.beginPath();
+	for (var i = 0; i < curStats.length; i++) { 
+		
+		statg = 0;
+		statr = 0;
+		
+		rad = (2*Math.PI/curStats.length)*i + rotOffset;
+		newr = 2*lw + 8*lw*(playerStats[i]-curStats[i].statMin)/(curStats[i].statMax-curStats[i].statMin);
+		if(newr > r) {
+			newr = r;
+			statg = 1;
+		}
+		if(newr < 0) {
+			newr = 0;
+			statr = 1;
+		}
+		
+		newy = newr*Math.sin(rad);
+		newx = newr*Math.cos(rad);
+		
+		if(statg == 1)
+			gdots[gdots.length] = new Array(newx,newy);
+		if(statr == 1)
+			rdots[rdots.length] = new Array(newx,newy);
+			
+		
+		if(i == 0)
+			ctx.moveTo(cx+newx, cy+newy);
+		else
+			ctx.lineTo(cx+newx, cy+newy);
 
-ctx.restore();
+	}
 
-var dataURL = c.toDataURL();
+	ctx.closePath();
+	ctx.fill();
+	ctx.restore();
 
-document.getElementById('canvasImg').src = dataURL;
+	//draw info
+	ctx.save();
+	ctx.fillStyle = "black";
+	
+	ctx.font = "bold 25px Calibri";
+	ctx.fillText(document.getElementById("playerName").value, -Math.floor(getWidthOfText(document.getElementById("playerName").value,'bold 25px Calibri')/2), -367);
+	
+	ctx.font = "bold 18px Calibri";
+	tempTxt = document.getElementById("playerClub").value + ' (' + document.getElementById("playerLeague").value +')';
+	ctx.fillText(tempTxt, -Math.floor(getWidthOfText(tempTxt,'bold 18px Calibri')/2), -343);
+	
+	ctx.font = "bold 16px Calibri";
+	tempTxt = document.getElementById("playerSeason").value + '  -  ' + templatename + '  -  ' + document.getElementById("playerAge").value;
+	ctx.fillText(tempTxt, -Math.floor(getWidthOfText(tempTxt,'bold 16px Calibri')/2), -319);
+	
+	ctx.font = "bold 14px Calibri";
+	ctx.fillText("@DavtyanR2", -Math.floor(getWidthOfText("@DavtyanR2",'bold 14px Calibri')/2), 378);
+	ctx.fillText("via whoscored", -Math.floor(getWidthOfText("via whoscored",'bold 14px Calibri')/2), 395);
+	ctx.restore();
 
+	//draw labels
+	ctx.save();
+	ctx.fillStyle = "black";
+	ctx.font = "bold " + labelFontSize + "px Arial";
+	ctx.textAlign = "center";
+
+	for (var i = 0; i < curStats.length; i++) { 
+
+		rad = (2*Math.PI/curStats.length)*i + rotOffset;
+		ctx.save();
+		ctx.translate(0,25);
+		
+		if((rad < Math.PI)&&(rad > 0)) {
+			ctx.rotate(rad-Math.PI/2);
+			ctx.fillText(curStats[i].statName, 0, r+20);
+			for(var j = 0; j < 9; j++) {
+				ctx.font = "bold " + valueFontSize + "px Arial";
+				ctx.fillText(Math.round((curStats[i].statMin+j*(curStats[i].statMax-curStats[i].statMin)/8)*100)/100, 0, (r/(numrings*2))*(j+1)+lw+3);
+			}
+		} else {
+			ctx.rotate(rad+Math.PI/2);
+			ctx.fillText(curStats[i].statName, 0, -r-15);
+			for(var j = 0; j < 9; j++) {
+				ctx.font = "bold " + valueFontSize + "px Arial";
+				ctx.fillText(Math.round((curStats[i].statMin+j*(curStats[i].statMax-curStats[i].statMin)/8)*100)/100, 0, -(r/(numrings*2))*(j+1)-lw+valueFontSize/2);
+			}
+		}
+		
+		
+		ctx.restore();
+
+	}
+
+	ctx.translate(0,0);
+	ctx.restore();
+	var dataURL = c.toDataURL();
+	document.getElementById('canvasImg').src = dataURL;
 }
 
 function fillFW() {
@@ -319,7 +320,6 @@ function fillFW() {
 		document.getElementById('stat'+i).value = messiStats[i];
 	}
 	templatename = "FW";
-	templatex = 320;
 	drawPlot();
 }
 
@@ -331,7 +331,6 @@ function fillAM() {
 		document.getElementById('stat'+i).value = messiStats[i];
 	}
 	templatename = "AM";
-	templatex = 318;
 	drawPlot();
 }
 
@@ -343,7 +342,6 @@ function fillCM() {
 		document.getElementById('stat'+i).value = gerrardStats[i];
 	}
 	templatename = "CM";
-	templatex = 319;
 	drawPlot();
 }
 
@@ -355,7 +353,6 @@ function fillFB() {
 		document.getElementById('stat'+i).value = alexsandroStats[i];
 	}
 	templatename = "FB";
-	templatex = 324;
 	drawPlot();
 }
 
@@ -437,7 +434,7 @@ color2
 <br>
 <span class="ilabel">width: </span><input onClick="this.select();" id="cwidth" value="700" type="textarea" size="1">
 <br>
-<span class="ilabel">height: </span><input onClick="this.select();" id="cheight" value="700" type="textarea" size="1">
+<span class="ilabel">height: </span><input onClick="this.select();" id="cheight" value="800" type="textarea" size="1">
 
 </div>
 
