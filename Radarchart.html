@@ -10,7 +10,7 @@
 <canvas id="myCanvas" width="700" height="800" style="border:1px solid #000000; display: none">
 </canvas>
 
-<canvas id="testCanvas" width="700" height="800" style="border:1px solid #000000; display: none">
+<canvas id="testCanvas" width="700" height="800" style="border:1px solid #000000">
 </canvas>
 
 <script>
@@ -141,9 +141,9 @@ function reassign() {
 	canvasGreen2 = parseInt(document.getElementById("greenRGB2").value);
 	canvasBlue2 = parseInt(document.getElementById("blueRGB2").value);
 	
-	playerColor1 = "rgba(" + canvasRed1 + ", " + canvasGreen1 + ", " + canvasBlue1 + ", 0.8)";
+	playerColor1 = "rgba(" + canvasRed1 + ", " + canvasGreen1 + ", " + canvasBlue1 + ", 0.7)";
 	
-	playerColor2 = "rgba(" + canvasRed2 + ", " + canvasGreen2 + ", " + canvasBlue2 + ", 0.8)";
+	playerColor2 = "rgba(" + canvasRed2 + ", " + canvasGreen2 + ", " + canvasBlue2 + ", 0.7)";
 	
 	playerColor1noalpha = "rgba(" + canvasRed1 + ", " + canvasGreen1 + ", " + canvasBlue1 + ", 1)";
 	
@@ -219,13 +219,14 @@ function drawPlot() {
 	pc.width = canvasWidth;
 	pc.height = canvasHeight;
 	var pctx = pc.getContext("2d");
-	pctx.fillStyle = playerColor1;
+	pctx.fillStyle = "white";
 	pctx.fillRect(0, 0, canvasWidth, canvasHeight);
 	pctx.translate(canvasWidth/2, canvasHeight/2);
 	pctx.imageSmoothingEnabled = true;
 	pctx.save();
-	pctx.strokeStyle = playerColor2;
 	pctx.lineWidth = lw;
+	
+	pctx.strokeStyle = playerColor2;
 	for(var i = 0; i < numrings; i++) {
 		pctx.beginPath();
 		pctx.arc(canvasWidth/2,canvasHeight/2+25,r/5*(i+1)-lw/2,0,2*Math.PI);
@@ -250,7 +251,33 @@ function drawPlot() {
 		pctx.closePath();
 		pctx.stroke();
 	}
-	pctx.translate(0, 0);
+	
+	pctx.strokeStyle = playerColor1;
+	for(var i = 0; i < numrings; i++) {
+		pctx.beginPath();
+		pctx.arc(canvasWidth/2,canvasHeight/2+25,r/5*(i+1)-3*lw/2,0,2*Math.PI);
+		pctx.closePath();
+		pctx.stroke();
+	}
+	for(var i = 0; i < numrings; i++) {
+		pctx.beginPath();
+		pctx.arc(canvasWidth/2,-canvasHeight/2+25,r/5*(i+1)-3*lw/2,0,2*Math.PI);
+		pctx.closePath();
+		pctx.stroke();
+	}
+	for(var i = 0; i < numrings; i++) {
+		pctx.beginPath();
+		pctx.arc(-canvasWidth/2,canvasHeight/2+25,r/5*(i+1)-3*lw/2,0,2*Math.PI);
+		pctx.closePath();
+		pctx.stroke();
+	}
+	for(var i = 0; i < numrings; i++) {
+		pctx.beginPath();
+		pctx.arc(-canvasWidth/2,-canvasHeight/2+25,r/5*(i+1)-3*lw/2,0,2*Math.PI);
+		pctx.closePath();
+		pctx.stroke();
+	}
+
 	var img=document.getElementById("testCanvas");
 	var pat=pctx.createPattern(img,"repeat");
 
