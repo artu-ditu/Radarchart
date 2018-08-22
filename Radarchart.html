@@ -10,9 +10,13 @@
 <canvas id="myCanvas" width="700" height="800" style="border:1px solid #000000; display: none">
 </canvas>
 
+<canvas id="testCanvas" width="700" height="800" style="border:1px solid #000000; display: none">
+</canvas>
+
 <script>
 
-var messiStats = new Array(0.79,5.71,45.9,85.1,0.40,2.70,0.40,0.58,2.48,5.10,17.6,15,15);
+var messiStats = new Array(80,80,80,80,80,80,80,80,80,80,80,80,80);
+var messi2Stats = new Array(0.79,5.71,45.9,85.1,0.40,2.70,0.40,0.58,2.48,5.10,17.6,15,15);
 var gerrardStats = new Array(86.2,1.98,.24,.44,.48,.62,1.06,50,2.98,1.51,7.49,15,15);
 var alexsandroStats = new Array(2.415,2.22,84.6,1.95,1.37,31.5,1.91,1.44,1.6,1.675,79.48,15,15);
 var vandijkStats = new Array(84.2,84.8,1.9,2.6,6.9,0.73,0.87,75.4,4.75,62.6,4.71,15,15);
@@ -209,13 +213,53 @@ function drawPlot() {
 	}
 	
 	ctx.restore();
+	
+	//second color of radar
+	var pc = document.getElementById("testCanvas");
+	pc.width = canvasWidth;
+	pc.height = canvasHeight;
+	var pctx = pc.getContext("2d");
+	pctx.fillStyle = playerColor1;
+	pctx.fillRect(0, 0, canvasWidth, canvasHeight);
+	pctx.translate(canvasWidth/2, canvasHeight/2);
+	pctx.imageSmoothingEnabled = true;
+	pctx.save();
+	pctx.strokeStyle = playerColor2;
+	pctx.lineWidth = lw;
+	for(var i = 0; i < numrings; i++) {
+		pctx.beginPath();
+		pctx.arc(canvasWidth/2,canvasHeight/2+25,r/5*(i+1)-lw/2,0,2*Math.PI);
+		pctx.closePath();
+		pctx.stroke();
+	}
+	for(var i = 0; i < numrings; i++) {
+		pctx.beginPath();
+		pctx.arc(canvasWidth/2,-canvasHeight/2+25,r/5*(i+1)-lw/2,0,2*Math.PI);
+		pctx.closePath();
+		pctx.stroke();
+	}
+	for(var i = 0; i < numrings; i++) {
+		pctx.beginPath();
+		pctx.arc(-canvasWidth/2,canvasHeight/2+25,r/5*(i+1)-lw/2,0,2*Math.PI);
+		pctx.closePath();
+		pctx.stroke();
+	}
+	for(var i = 0; i < numrings; i++) {
+		pctx.beginPath();
+		pctx.arc(-canvasWidth/2,-canvasHeight/2+25,r/5*(i+1)-lw/2,0,2*Math.PI);
+		pctx.closePath();
+		pctx.stroke();
+	}
+	pctx.translate(0, 0);
+	var img=document.getElementById("testCanvas");
+	var pat=pctx.createPattern(img,"repeat");
 
 	var gdots = new Array();
 	var rdots = new Array();
 	
 	//draw radar
 	ctx.save();
-	ctx.fillStyle = playerColor1;
+	ctx.fillStyle = pat;
 	ctx.beginPath();
 	for (var i = 0; i < curStats.length; i++) { 
 		
