@@ -1,492 +1,497 @@
+<script>
+ var messiStats = new Array(0.79,5.71,45.9,85.1,0.40,2.70,0.40,0.58,2.48,2.4,66,15,15);
+ var gerrardStats = new Array(86.2,1.98,.24,.44,.48,.62,1.06,50,2.98,1.51,7.49,15,15);
+ var alexsandroStats = new Array(2.415,2.22,84.6,1.95,1.37,31.5,1.91,1.44,1.6,1.675,79.48,15,15);
+ var vandijkStats = new Array(84.2,84.8,1.9,2.6,6.9,0.73,0.87,75.4,4.75,62.6,4.71,15,15);
+ 
+ var playerStats = messiStats.slice(0);
+ 
+ function StatInfo(statName,statMin,statMax) {
+	this.statName = statName;
+	this.statMin = statMin;
+	this.statMax = statMax;
+ }
+ 
+ function getWidthOfText(txt, font){
+	 if(getWidthOfText.c === undefined){
+		 getWidthOfText.c=document.createElement('canvas');
+		 getWidthOfText.ctx=getWidthOfText.c.getContext('2d');
+	 }
+	 getWidthOfText.ctx.font = font;
+	 return getWidthOfText.ctx.measureText(txt).width;
+ }
+ 
+ var fwLabels = new Array();
+ fwLabels[0] = new StatInfo("Non-Penalty Goals",0.16,0.72);
+ fwLabels[1] = new StatInfo("Strzały",1.6,4.4);
+ fwLabels[2] = new StatInfo("Strzały w polu karnym",1.3,3.3);
+ fwLabels[3] = new StatInfo("Celność strzałów%",38,66);
+ fwLabels[4] = new StatInfo("Celność podań%",56,80);
+ fwLabels[5] = new StatInfo("Asysty",0.03,0.27);
+ fwLabels[6] = new StatInfo("Wykreowane szanse",0.5,1.9);
+ fwLabels[7] = new StatInfo("Wygrane w powietrzu",0.3,6.9);
+ fwLabels[8] = new StatInfo("Odbiory i przechwyty",0.3,2.2);
+ fwLabels[9] = new StatInfo("Utrata posiadania",3.4,0.8);
+ fwLabels[10] = new StatInfo("Skuteczność dryblingów%",30,70);
+ fwLabels[11] = new StatInfo("Udane dryblingi",0.3,2.5);
+ fwLabels[12] = new StatInfo("Skuteczność strzałów%",10,30);
+ 
+ var amLabels = new Array();
+ amLabels[0] = new StatInfo("Non-Penalty Goals",0.04,0.48);
+ amLabels[1] = new StatInfo("Strzały",0.9,3.5);
+ amLabels[2] = new StatInfo("Strzały w polu karnym",0.5,2.3);
+ amLabels[3] = new StatInfo("Celność strzałów%",30,70);
+ amLabels[4] = new StatInfo("Celność podań%",67,87);
+ amLabels[5] = new StatInfo("Asysty",0.05,0.41);
+ amLabels[6] = new StatInfo("Wykreowane szanse",0.9,3.3);
+ amLabels[7] = new StatInfo("Wyk. szanse z otwartej gry",0.7,2.5);
+ amLabels[8] = new StatInfo("Odbiory i przechwyty",0.9,3.7);
+ amLabels[9] = new StatInfo("Utrata posiadania",3,1);
+ amLabels[10] = new StatInfo("Skuteczność dryblingów%",44,76);
+ amLabels[11] = new StatInfo("Udane dryblingi",0.6,3.4);
+ amLabels[12] = new StatInfo("Skuteczność strzałów%",4,26);
+ 
+ var cmLabels = new Array();
+ cmLabels[0] = new StatInfo("Celność podań%",74,90);
+ cmLabels[1] = new StatInfo("Wykreowane szanse",0.4,2);
+ cmLabels[2] = new StatInfo("Asysty + NPG",0,0.4);
+ cmLabels[3] = new StatInfo("Strzały",0.3,2.1);
+ cmLabels[4] = new StatInfo("Udane dryblingi",0.3,2.1);
+ cmLabels[5] = new StatInfo("Utrata posiadania",2.1,0.5);
+ cmLabels[6] = new StatInfo("Faule",2.6,0.6);
+ cmLabels[7] = new StatInfo("Wygrane w powietrzu",0.5,3.3);
+ cmLabels[8] = new StatInfo("Odbiory/próby%",50,74);
+ cmLabels[9] = new StatInfo("Udane odbiory PAdj",1.2,3.6);
+ cmLabels[10] = new StatInfo("Przechwyty PAdj",0.8,2.6);
+ cmLabels[11] = new StatInfo("Celność długich podań%",45,77);
+ cmLabels[12] = new StatInfo("Celne długie podania",1.2,6);
+ 
+ var fbLabels = new Array();
+ fbLabels[0] = new StatInfo("Udane odbiory PAdj",1,3.4);
+ fbLabels[1] = new StatInfo("Przechwyty PAdj",1,3);
+ fbLabels[2] = new StatInfo("Celność podań%",70,86);
+ fbLabels[3] = new StatInfo("Asysty + NPG",0.03,0.33);
+ fbLabels[4] = new StatInfo("Wykreowane szanse",0.4,1.6);
+ fbLabels[5] = new StatInfo("Celne dośrodkowania",0.4,1.2);
+ fbLabels[6] = new StatInfo("Celność dośrodkowań%",13,33);
+ fbLabels[7] = new StatInfo("Udane dryblingi",0.4,1.6);
+ fbLabels[8] = new StatInfo("Utrata posiadania",1.4,0.2);
+ fbLabels[9] = new StatInfo("Wygrane w powietrzu",0.5,2.5);
+ fbLabels[10] = new StatInfo("Faule",2.1,0.5);
+ fbLabels[11] = new StatInfo("Wybicia PAdj",1.2,4);
+ fbLabels[12] = new StatInfo("Odbiory/próby%",60,84);
+ 
+ var cbLabels = new Array();
+ cbLabels[0] = new StatInfo("Celność podań%",70,90);
+ cbLabels[1] = new StatInfo("Odbiory/próby%",64,88);
+ cbLabels[2] = new StatInfo("Udane odbiory PAdj",1,3);
+ cbLabels[3] = new StatInfo("Przechwyty PAdj",1,3.4);
+ cbLabels[4] = new StatInfo("Wybicia PAdj",2.8,8);
+ cbLabels[5] = new StatInfo("Bloki/strzały",0.033,0.085);
+ cbLabels[6] = new StatInfo("Faule",1.86,0.42);
+ cbLabels[7] = new StatInfo("Utrata posiadania",0.45,0.03);
+ cbLabels[8] = new StatInfo("Wygrane w powietrzu%",52,76);
+ cbLabels[9] = new StatInfo("Wygrane w powietrzu",1.2,4);
+ cbLabels[10] = new StatInfo("Wykreowane szanse",0.03,0.41);
+ cbLabels[11] = new StatInfo("Celność długich podań%",40,76);
+ cbLabels[12] = new StatInfo("Celne długie podania",2,6.4);
+ 
+ 
+ var curStats = fwLabels;
+ 
+ var canvasHeight = 800;
+ var canvasWidth = 700;
+ playerColor1 = "rgba(0, 0, 0, 0.8)";
+ playerColor2 = "rgba(0, 0, 0, 0.8)";
+ playerColor1noalpha = "rgba(0, 0, 0, 1)";
+ playerColor2noalpha = "rgba(0, 0, 0, 1)";
+ templatename = "brak"
+ labelFontSize = 11;
+ valueFontSize = 10;
+ numrings = 5;
+ rotOffset = -Math.PI/2;
+ 
+ 
+ function reassign() {
+ 
+	canvasHeight = parseInt(document.getElementById("cheight").value); 
+	canvasWidth = parseInt(document.getElementById("cwidth").value);
+	
+	canvasRed1 = parseInt(document.getElementById("redRGB1").value); 
+	canvasGreen1 = parseInt(document.getElementById("greenRGB1").value);
+	canvasBlue1 = parseInt(document.getElementById("blueRGB1").value);
+	
+	canvasRed2 = parseInt(document.getElementById("redRGB2").value); 
+	canvasGreen2 = parseInt(document.getElementById("greenRGB2").value);
+	canvasBlue2 = parseInt(document.getElementById("blueRGB2").value);
+	
+	if(canvasRed1+canvasGreen1+canvasBlue1 <= canvasRed2+canvasGreen2+canvasBlue2){
+	playerColor1 = "rgba(" + canvasRed1 + ", " + canvasGreen1 + ", " + canvasBlue1 + ", 0.8)";
+	playerColor2 = "rgba(" + canvasRed2 + ", " + canvasGreen2 + ", " + canvasBlue2 + ", 0.8)";
+	playerColor1noalpha = "rgba(" + canvasRed1 + ", " + canvasGreen1 + ", " + canvasBlue1 + ", 1)";
+	playerColor2noalpha = "rgba(" + canvasRed2 + ", " + canvasGreen2 + ", " + canvasBlue2 + ", 1)";
+	}
+	else{
+	playerColor2 = "rgba(" + canvasRed1 + ", " + canvasGreen1 + ", " + canvasBlue1 + ", 0.8)";
+	playerColor1 = "rgba(" + canvasRed2 + ", " + canvasGreen2 + ", " + canvasBlue2 + ", 0.8)";
+	playerColor2noalpha = "rgba(" + canvasRed1 + ", " + canvasGreen1 + ", " + canvasBlue1 + ", 1)";
+	playerColor1noalpha = "rgba(" + canvasRed2 + ", " + canvasGreen2 + ", " + canvasBlue2 + ", 1)";
+	}
+	
+	curStats = new Array();
+	var count = 0;
+	
+	for(var j = 0; j < 13; j++) {
+	
+		if(document.getElementById("name"+j).value != "") {
+		
+			curStats[count] = new StatInfo(document.getElementById("name"+j).value,
+				parseFloat(document.getElementById("min"+j).value),
+				parseFloat(document.getElementById("max"+j).value));
+			
+			playerStats[count] = parseFloat(document.getElementById("stat"+j).value);
+			
+			if(curStats[count].statName == "Udane odbiory PAdj"
+				|| curStats[count].statName == "Przechwyty PAdj" 
+				|| curStats[count].statName == "Wybicia PAdj") 
+				playerStats[count] = playerStats[count] * 2/(1 + Math.pow(2.71828,(-0.1*(document.getElementById("possession").value-50))));
+			
+			if(curStats[count].statName == "Bloki/strzały")
+				playerStats[count] = playerStats[count]/document.getElementById("shotsfaced").value;
+				
+			count++;
+		}
+	
+	}
+ 
+ }
+ 
+ function drawRings(ctx, cx, cy, r, lw) {
+	
+	for(var i = 0; i <= numrings; i++) {
+ 
+		ctx.beginPath();
+		ctx.arc(cx,cy,r/5*(i+1)-2*lw,0,2*Math.PI);
+		ctx.closePath();
+		ctx.stroke();
+ 
+	}
+	
+	for(var i = 0; i < numrings; i++) {
+ 
+		ctx.beginPath();
+		ctx.arc(cx,cy,r/5*(i+1)-lw,0,2*Math.PI);
+		ctx.closePath();
+		ctx.stroke();
+ 
+	}
+ }
+ 
+ function drawPlot() {
+ 
+	reassign();
+ 
+	cx = 0; //x offset
+	cy = 25; //y offset
+	r = Math.min(canvasWidth,canvasHeight)/2 - 50;
+ 
+	//set canvas size
+	var c = document.getElementById("myCanvas");
+	c.width = canvasWidth;
+	c.height = canvasHeight;
+ 
+	//get context and set it up
+	var ctx = c.getContext("2d");
+	ctx.fillStyle = "white";
+	ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+	ctx.translate(canvasWidth/2, canvasHeight/2);
+	ctx.imageSmoothingEnabled = true;
+ 
+	//draw rings
+	lw = r/(numrings*2);
+	ctx.save();
+	ctx.strokeStyle = "rgba(233,233,233,1)";
+	ctx.lineWidth = lw/4;
+	
+	drawRings(ctx, cx, cy, r, lw);
+	
+	ctx.restore();
+	
+	//second color of radar
+	var pc = document.getElementById("testCanvas");
+	pc.width = canvasWidth;
+	pc.height = canvasHeight;
+	var pctx = pc.getContext("2d");
+	pctx.fillStyle = playerColor1;
+	pctx.fillRect(0, 0, canvasWidth, canvasHeight);
+	pctx.translate(canvasWidth/2, canvasHeight/2);
+	pctx.imageSmoothingEnabled = true;
+	pctx.save();
+	pctx.lineWidth = lw;
+	
+	pctx.strokeStyle = "white";
+	for(var i = 0; i < numrings; i++) {
+		pctx.beginPath();
+		pctx.arc(canvasWidth/2,canvasHeight/2+25,r/5*(i+1)-3*lw/2,0,2*Math.PI);
+		pctx.closePath();
+		pctx.stroke();
+	}
+	for(var i = 0; i < numrings; i++) {
+		pctx.beginPath();
+		pctx.arc(canvasWidth/2,-canvasHeight/2+25,r/5*(i+1)-3*lw/2,0,2*Math.PI);
+		pctx.closePath();
+		pctx.stroke();
+	}
+	for(var i = 0; i < numrings; i++) {
+		pctx.beginPath();
+		pctx.arc(-canvasWidth/2,canvasHeight/2+25,r/5*(i+1)-3*lw/2,0,2*Math.PI);
+		pctx.closePath();
+		pctx.stroke();
+	}
+	for(var i = 0; i < numrings; i++) {
+		pctx.beginPath();
+		pctx.arc(-canvasWidth/2,-canvasHeight/2+25,r/5*(i+1)-3*lw/2,0,2*Math.PI);
+		pctx.closePath();
+		pctx.stroke();
+	}
+ 
+		pctx.strokeStyle = playerColor2;
+	for(var i = 0; i < numrings; i++) {
+		pctx.beginPath();
+		pctx.arc(canvasWidth/2,canvasHeight/2+25,r/5*(i+1)-3*lw/2,0,2*Math.PI);
+		pctx.closePath();
+		pctx.stroke();
+	}
+	for(var i = 0; i < numrings; i++) {
+		pctx.beginPath();
+		pctx.arc(canvasWidth/2,-canvasHeight/2+25,r/5*(i+1)-3*lw/2,0,2*Math.PI);
+		pctx.closePath();
+		pctx.stroke();
+	}
+	for(var i = 0; i < numrings; i++) {
+		pctx.beginPath();
+		pctx.arc(-canvasWidth/2,canvasHeight/2+25,r/5*(i+1)-3*lw/2,0,2*Math.PI);
+		pctx.closePath();
+		pctx.stroke();
+	}
+	for(var i = 0; i < numrings; i++) {
+		pctx.beginPath();
+		pctx.arc(-canvasWidth/2,-canvasHeight/2+25,r/5*(i+1)-3*lw/2,0,2*Math.PI);
+		pctx.closePath();
+		pctx.stroke();
+	}
+	
+	var img = document.getElementById("testCanvas");
+	var pat = pctx.createPattern(img,"repeat");
+ 
+	var gdots = new Array();
+	var rdots = new Array();
+	
+	//draw radar
+	ctx.save();
+	ctx.fillStyle = pat;
+	ctx.beginPath();
+	for (var i = 0; i < curStats.length; i++) { 
+		
+		statg = 0;
+		statr = 0;
+		
+		rad = (2*Math.PI/curStats.length)*i + rotOffset;
+		newr = 2*lw + 8*lw*(playerStats[i]-curStats[i].statMin)/(curStats[i].statMax-curStats[i].statMin);
+		if(newr > r) {
+			newr = r;
+			statg = 1;
+		}
+		if(newr < 0) {
+			newr = 0;
+			statr = 1;
+		}
+		
+		newy = newr*Math.sin(rad);
+		newx = newr*Math.cos(rad);
+		
+		if(statg == 1)
+			gdots[gdots.length] = new Array(newx,newy);
+		if(statr == 1)
+			rdots[rdots.length] = new Array(newx,newy);
+			
+		
+		if(i == 0)
+			ctx.moveTo(cx+newx, cy+newy);
+		else
+			ctx.lineTo(cx+newx, cy+newy);
+ 
+	}
+ 
+	ctx.closePath();
+	ctx.fill();
+	ctx.restore();
+	
+	//draw contour
+	ctx.save();
+	ctx.strokeStyle = playerColor1;
+	ctx.lineWidth=1;
+	ctx.beginPath();
+	for (var i = 0; i < curStats.length; i++) { 
+		
+		statg = 0;
+		statr = 0;
+		
+		rad = (2*Math.PI/curStats.length)*i + rotOffset;
+		newr = 2*lw + 8*lw*(playerStats[i]-curStats[i].statMin)/(curStats[i].statMax-curStats[i].statMin);
+		if(newr > r) {
+			newr = r;
+			statg = 1;
+		}
+		if(newr < 0) {
+			newr = 0;
+			statr = 1;
+		}
+		
+		newy = newr*Math.sin(rad);
+		newx = newr*Math.cos(rad);
+		
+		if(statg == 1)
+			gdots[gdots.length] = new Array(newx,newy);
+		if(statr == 1)
+			rdots[rdots.length] = new Array(newx,newy);
+			
+		
+		if(i == 0)
+			ctx.moveTo(cx+newx, cy+newy);
+		else
+			ctx.lineTo(cx+newx, cy+newy);
+ 
+	}
+ 
+	ctx.closePath();
+	ctx.stroke();
+	ctx.restore();
+ 
+	//draw info
+	ctx.save();
+	ctx.fillStyle = "black";
+	
+	ctx.font = "bold 25px Calibri";
+	ctx.fillText(document.getElementById("playerName").value, -Math.floor(getWidthOfText(document.getElementById("playerName").value,'bold 25px Calibri')/2), -367);
+	
+	ctx.font = "bold 18px Calibri";
+	tempTxt = document.getElementById("playerClub").value + ' (' + document.getElementById("playerLeague").value +')';
+	ctx.fillText(tempTxt, -Math.floor(getWidthOfText(tempTxt,'bold 18px Calibri')/2), -343);
+	
+	ctx.font = "bold 16px Calibri";
+	tempTxt = document.getElementById("playerSeason").value + '  -  ' + templatename + '  -  ' + document.getElementById("playerAge").value;
+	ctx.fillText(tempTxt, -Math.floor(getWidthOfText(tempTxt,'bold 16px Calibri')/2), -319);
+	
+	ctx.font = "bold 14px Calibri";
+	ctx.fillText("@DavtyanR2", -Math.floor(getWidthOfText("@DavtyanR2",'bold 14px Calibri')/2), 378);
+	ctx.fillText("via whoscored", -Math.floor(getWidthOfText("via whoscored",'bold 14px Calibri')/2), 395);
+	ctx.restore();
+ 
+	//draw labels
+	ctx.save();
+	ctx.fillStyle = "black";
+	ctx.font = "bold " + labelFontSize + "px Arial";
+	ctx.textAlign = "center";
+ 
+	for (var i = 0; i < curStats.length; i++) { 
+ 
+		rad = (2*Math.PI/curStats.length)*i + rotOffset;
+		ctx.save();
+		ctx.translate(0,25);
+		
+		if((rad < Math.PI)&&(rad > 0)) {
+			ctx.rotate(rad-Math.PI/2);
+			ctx.fillText(curStats[i].statName, 0, r+20);
+			for(var j = 0; j < 9; j++) {
+				ctx.font = "bold " + valueFontSize + "px Arial";
+				ctx.fillText(Math.round((curStats[i].statMin+j*(curStats[i].statMax-curStats[i].statMin)/8)*100)/100, 0, (r/(numrings*2))*(j+1)+lw+3);
+			}
+		} else {
+			ctx.rotate(rad+Math.PI/2);
+			ctx.fillText(curStats[i].statName, 0, -r-15);
+			for(var j = 0; j < 9; j++) {
+				ctx.font = "bold " + valueFontSize + "px Arial";
+				ctx.fillText(Math.round((curStats[i].statMin+j*(curStats[i].statMax-curStats[i].statMin)/8)*100)/100, 0, -(r/(numrings*2))*(j+1)-lw+valueFontSize/2);
+			}
+		}
+		
+		
+		ctx.restore();
+ 
+	}
+ 
+	ctx.translate(0,0);
+	ctx.restore();
+	
+	var dataURL = c.toDataURL();
+	document.getElementById('canvasImg').src = dataURL;
+ }
+ 
+ function fillFW() {
+	for(var i = 0; i < fwLabels.length; i++) {
+		document.getElementById('name'+i).value = fwLabels[i].statName;
+		document.getElementById('min'+i).value = fwLabels[i].statMin;
+		document.getElementById('max'+i).value = fwLabels[i].statMax;
+		document.getElementById('stat'+i).value = messiStats[i];
+	}
+	templatename = "FW";
+	drawPlot();
+ }
+ 
+ function fillAM() {
+	for(var i = 0; i < amLabels.length; i++) {
+		document.getElementById('name'+i).value = amLabels[i].statName;
+		document.getElementById('min'+i).value = amLabels[i].statMin;
+		document.getElementById('max'+i).value = amLabels[i].statMax;
+		document.getElementById('stat'+i).value = messiStats[i];
+	}
+	templatename = "AM";
+	drawPlot();
+ }
+ 
+ function fillCM() {
+	for(var i = 0; i < cmLabels.length; i++) {
+		document.getElementById('name'+i).value = cmLabels[i].statName;
+		document.getElementById('min'+i).value = cmLabels[i].statMin;
+		document.getElementById('max'+i).value = cmLabels[i].statMax;
+		document.getElementById('stat'+i).value = gerrardStats[i];
+	}
+	templatename = "CM";
+	drawPlot();
+ }
+ 
+ function fillFB() {
+	for(var i = 0; i < fbLabels.length; i++) {
+		document.getElementById('name'+i).value = fbLabels[i].statName;
+		document.getElementById('min'+i).value = fbLabels[i].statMin;
+		document.getElementById('max'+i).value = fbLabels[i].statMax;
+		document.getElementById('stat'+i).value = alexsandroStats[i];
+	}
+	templatename = "FB";
+	drawPlot();
+ }
+ 
+ function fillCB() {
+	for(var i = 0; i < cbLabels.length; i++) {
+		document.getElementById('name'+i).value = cbLabels[i].statName;
+		document.getElementById('min'+i).value = cbLabels[i].statMin;
+		document.getElementById('max'+i).value = cbLabels[i].statMax;
+		document.getElementById('stat'+i).value = vandijkStats[i];
+	}
+	templatename = "CB";
+	drawPlot();
+ }
+ 
+</script>
 <html>
    <head>
-      <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
       <title>Radarchart</title>
    </head>
    <body>
       <canvas id="myCanvas" width="700" height="800" style="border:1px solid #000000; display: none"></canvas>
       <canvas id="testCanvas" width="700" height="800" style="border:1px solid #000000; display: none"></canvas>
-      <script>
-         var messiStats = new Array(80,80,80,80,80,80,80,80,80,80,80,80,80);
-         var messi2Stats = new Array(0.79,5.71,45.9,85.1,0.40,2.70,0.40,0.58,2.48,5.10,17.6,15,15);
-         var gerrardStats = new Array(86.2,1.98,.24,.44,.48,.62,1.06,50,2.98,1.51,7.49,15,15);
-         var alexsandroStats = new Array(2.415,2.22,84.6,1.95,1.37,31.5,1.91,1.44,1.6,1.675,79.48,15,15);
-         var vandijkStats = new Array(84.2,84.8,1.9,2.6,6.9,0.73,0.87,75.4,4.75,62.6,4.71,15,15);
-         
-         var playerStats = messiStats.slice(0);
-         
-         function StatInfo(statName,statMin,statMax) {
-         	this.statName = statName;
-         	this.statMin = statMin;
-         	this.statMax = statMax;
-         }
-         
-         function getWidthOfText(txt, font){
-             if(getWidthOfText.c === undefined){
-                 getWidthOfText.c=document.createElement('canvas');
-                 getWidthOfText.ctx=getWidthOfText.c.getContext('2d');
-             }
-             getWidthOfText.ctx.font = font;
-             return getWidthOfText.ctx.measureText(txt).width;
-         }
-         
-         var fwLabels = new Array();
-         fwLabels[0] = new StatInfo("Non-Penalty Goals",0.16,0.72);
-         fwLabels[1] = new StatInfo("Strzaly",1.6,4.4);
-         fwLabels[2] = new StatInfo("Strzaly w polu karnym",1.3,3.3);
-         fwLabels[3] = new StatInfo("Celnosc strzalow%",38,66);
-         fwLabels[4] = new StatInfo("Celnosc podan%",56,80);
-         fwLabels[5] = new StatInfo("Asysty",0.03,0.27);
-         fwLabels[6] = new StatInfo("Wykreowane szanse",0.5,1.9);
-         fwLabels[7] = new StatInfo("Wygrane w powietrzu",0.3,6.9);
-         fwLabels[8] = new StatInfo("Odbiory i przechwyty",0.3,2.2);
-         fwLabels[9] = new StatInfo("Utrata posiadania",3.4,0.8);
-         fwLabels[10] = new StatInfo("Skutecznosc drybling�w%",30,70);
-         fwLabels[11] = new StatInfo("Udane dryblingi",0.3,2.5);
-         fwLabels[12] = new StatInfo("Skutecznosc strzalow%",10,30);
-         
-         var amLabels = new Array();
-         amLabels[0] = new StatInfo("Non-Penalty Goals",0.04,0.48);
-         amLabels[1] = new StatInfo("Strzaly",0.9,3.5);
-         amLabels[2] = new StatInfo("Strzaly w polu karnym",0.5,2.3);
-         amLabels[3] = new StatInfo("Celnosc strzalow%",30,70);
-         amLabels[4] = new StatInfo("Celnosc podan%",67,87);
-         amLabels[5] = new StatInfo("Asysty",0.05,0.41);
-         amLabels[6] = new StatInfo("Wykreowane szanse",0.9,3.3);
-         amLabels[7] = new StatInfo("Wyk. szanse z otwartej gry",0.7,2.5);
-         amLabels[8] = new StatInfo("Odbiory i przechwyty",0.9,3.7);
-         amLabels[9] = new StatInfo("Utrata posiadania",3,1);
-         amLabels[10] = new StatInfo("Skutecznosc drybling�w%",44,76);
-         amLabels[11] = new StatInfo("Udane dryblingi",0.6,3.4);
-         amLabels[12] = new StatInfo("Skutecznosc strzalow%",4,26);
-         
-         var cmLabels = new Array();
-         cmLabels[0] = new StatInfo("Celnosc podan%",74,90);
-         cmLabels[1] = new StatInfo("Wykreowane szanse",0.4,2);
-         cmLabels[2] = new StatInfo("Asysty + NPG",0,0.4);
-         cmLabels[3] = new StatInfo("Strzaly",0.3,2.1);
-         cmLabels[4] = new StatInfo("Udane dryblingi",0.3,2.1);
-         cmLabels[5] = new StatInfo("Utrata posiadania",2.1,0.5);
-         cmLabels[6] = new StatInfo("Faule",2.6,0.6);
-         cmLabels[7] = new StatInfo("Wygrane w powietrzu",0.5,3.3);
-         cmLabels[8] = new StatInfo("Odbiory/proby%",50,74);
-         cmLabels[9] = new StatInfo("Udane odbiory PAdj",1.2,3.6);
-         cmLabels[10] = new StatInfo("Przechwyty PAdj",0.8,2.6);
-         cmLabels[11] = new StatInfo("Celnosc dlugich podan%",45,77);
-         cmLabels[12] = new StatInfo("Celne dlugie podania",1.2,6);
-         
-         var fbLabels = new Array();
-         fbLabels[0] = new StatInfo("Udane odbiory PAdj",1,3.4);
-         fbLabels[1] = new StatInfo("Przechwyty PAdj",1,3);
-         fbLabels[2] = new StatInfo("Celnosc podan%",70,86);
-         fbLabels[3] = new StatInfo("Asysty + NPG",0.03,0.33);
-         fbLabels[4] = new StatInfo("Wykreowane szanse",0.4,1.6);
-         fbLabels[5] = new StatInfo("Celne dosrodkowania",0.4,1.2);
-         fbLabels[6] = new StatInfo("Celnosc dosrodkowan%",13,33);
-         fbLabels[7] = new StatInfo("Udane dryblingi",0.4,1.6);
-         fbLabels[8] = new StatInfo("Utrata posiadania",1.4,0.2);
-         fbLabels[9] = new StatInfo("Wygrane w powietrzu",0.5,2.5);
-         fbLabels[10] = new StatInfo("Faule",2.1,0.5);
-         fbLabels[11] = new StatInfo("Wybicia PAdj",1.2,4);
-         fbLabels[12] = new StatInfo("Odbiory/proby%",60,84);
-         
-         var cbLabels = new Array();
-         cbLabels[0] = new StatInfo("Celnosc podan%",70,90);
-         cbLabels[1] = new StatInfo("Odbiory/proby%",64,88);
-         cbLabels[2] = new StatInfo("Udane odbiory PAdj",1,3);
-         cbLabels[3] = new StatInfo("Przechwyty PAdj",1,3.4);
-         cbLabels[4] = new StatInfo("Wybicia PAdj",2.8,8);
-         cbLabels[5] = new StatInfo("Bloki/strzaly",0.033,0.085);
-         cbLabels[6] = new StatInfo("Faule",1.86,0.42);
-         cbLabels[7] = new StatInfo("Utrata posiadania",0.45,0.03);
-         cbLabels[8] = new StatInfo("Wygrane w powietrzu%",52,76);
-         cbLabels[9] = new StatInfo("Wygrane w powietrzu",1.2,4);
-         cbLabels[10] = new StatInfo("Wykreowane szanse",0.03,0.41);
-         cbLabels[11] = new StatInfo("Celnosc dlugich podan%",40,76);
-         cbLabels[12] = new StatInfo("Celne dlugie podania",2,6.4);
-         
-         
-         var curStats = fwLabels;
-         
-         var canvasHeight = 800;
-         var canvasWidth = 700;
-         playerColor = "rgba(0, 0, 0, 0.8)";
-         playerColor1noalpha = "rgba(0, 0, 0, 0.8)";
-         playerColor2noalpha = "rgba(0, 0, 0, 0.8)";
-         templatename = "brak"
-         labelFontSize = 11;
-         valueFontSize = 10;
-         numrings = 5;
-         rotOffset = -Math.PI/2;
-         
-         
-         function reassign() {
-         
-         	canvasHeight = parseInt(document.getElementById("cheight").value); 
-         	canvasWidth = parseInt(document.getElementById("cwidth").value);
-         	
-         	canvasRed1 = parseInt(document.getElementById("redRGB1").value); 
-         	canvasGreen1 = parseInt(document.getElementById("greenRGB1").value);
-         	canvasBlue1 = parseInt(document.getElementById("blueRGB1").value);
-         	
-         	canvasRed2 = parseInt(document.getElementById("redRGB2").value); 
-         	canvasGreen2 = parseInt(document.getElementById("greenRGB2").value);
-         	canvasBlue2 = parseInt(document.getElementById("blueRGB2").value);
-         	
-         	playerColor1 = "rgba(" + canvasRed1 + ", " + canvasGreen1 + ", " + canvasBlue1 + ", 0.8)";
-         	
-         	playerColor2 = "rgba(" + canvasRed2 + ", " + canvasGreen2 + ", " + canvasBlue2 + ", 0.8)";
-         	
-         	playerColor1noalpha = "rgba(" + canvasRed1 + ", " + canvasGreen1 + ", " + canvasBlue1 + ", 1)";
-         	
-         	playerColor2noalpha = "rgba(" + canvasRed2 + ", " + canvasGreen2 + ", " + canvasBlue2 + ", 1)";
-         	
-         	curStats = new Array();
-         	var count = 0;
-         	
-         	for(var j = 0; j < 13; j++) {
-         	
-         		if(document.getElementById("name"+j).value != "") {
-         		
-         			curStats[count] = new StatInfo(document.getElementById("name"+j).value,
-         				parseFloat(document.getElementById("min"+j).value),
-         				parseFloat(document.getElementById("max"+j).value));
-         			
-         			playerStats[count] = parseFloat(document.getElementById("stat"+j).value);
-         			
-         			if(curStats[count].statName == "Udane odbiory PAdj"
-         				|| curStats[count].statName == "Przechwyty PAdj" 
-         				|| curStats[count].statName == "Wybicia PAdj") 
-         				playerStats[count] = playerStats[count] * 2/(1 + Math.pow(2.71828,(-0.1*(document.getElementById("possession").value-50))));
-         			
-         			if(curStats[count].statName == "Bloki/strzaly")
-         				playerStats[count] = playerStats[count]/document.getElementById("shotsfaced").value;
-         				
-         			count++;
-         		}
-         	
-         	}
-         
-         }
-         
-         function drawRings(ctx, cx, cy, r, lw) {
-         	
-         	for(var i = 0; i <= numrings; i++) {
-         
-         		ctx.beginPath();
-         		ctx.arc(cx,cy,r/5*(i+1)-2*lw,0,2*Math.PI);
-         		ctx.closePath();
-         		ctx.stroke();
-         
-         	}
-         	
-         	for(var i = 0; i < numrings; i++) {
-         
-         		ctx.beginPath();
-         		ctx.arc(cx,cy,r/5*(i+1)-lw,0,2*Math.PI);
-         		ctx.closePath();
-         		ctx.stroke();
-         
-         	}
-         }
-         
-         function drawPlot() {
-         
-         	reassign();
-         
-         	cx = 0; //x offset
-         	cy = 25; //y offset
-         	r = Math.min(canvasWidth,canvasHeight)/2 - 50;
-         
-         	//set canvas size
-         	var c = document.getElementById("myCanvas");
-         	c.width = canvasWidth;
-         	c.height = canvasHeight;
-         
-         	//get context and set it up
-         	var ctx = c.getContext("2d");
-         	ctx.fillStyle = "white";
-         	ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-         	ctx.translate(canvasWidth/2, canvasHeight/2);
-         	ctx.imageSmoothingEnabled = true;
-         
-         	//draw rings
-         	lw = r/(numrings*2);
-         	ctx.save();
-         	ctx.strokeStyle = "rgba(233,233,233,1)";
-         	ctx.lineWidth = lw/4;
-         	
-         	drawRings(ctx, cx, cy, r, lw);
-         	
-         	ctx.restore();
-         	
-         	//second color of radar
-         	var pc = document.getElementById("testCanvas");
-         	pc.width = canvasWidth;
-         	pc.height = canvasHeight;
-         	var pctx = pc.getContext("2d");
-         	pctx.fillStyle = playerColor1;
-         	pctx.fillRect(0, 0, canvasWidth, canvasHeight);
-         	pctx.translate(canvasWidth/2, canvasHeight/2);
-         	pctx.imageSmoothingEnabled = true;
-         	pctx.save();
-         	pctx.lineWidth = lw;
-         	
-         	pctx.strokeStyle = "white";
-         	for(var i = 0; i < numrings; i++) {
-         		pctx.beginPath();
-         		pctx.arc(canvasWidth/2,canvasHeight/2+25,r/5*(i+1)-3*lw/2,0,2*Math.PI);
-         		pctx.closePath();
-         		pctx.stroke();
-         	}
-         	for(var i = 0; i < numrings; i++) {
-         		pctx.beginPath();
-         		pctx.arc(canvasWidth/2,-canvasHeight/2+25,r/5*(i+1)-3*lw/2,0,2*Math.PI);
-         		pctx.closePath();
-         		pctx.stroke();
-         	}
-         	for(var i = 0; i < numrings; i++) {
-         		pctx.beginPath();
-         		pctx.arc(-canvasWidth/2,canvasHeight/2+25,r/5*(i+1)-3*lw/2,0,2*Math.PI);
-         		pctx.closePath();
-         		pctx.stroke();
-         	}
-         	for(var i = 0; i < numrings; i++) {
-         		pctx.beginPath();
-         		pctx.arc(-canvasWidth/2,-canvasHeight/2+25,r/5*(i+1)-3*lw/2,0,2*Math.PI);
-         		pctx.closePath();
-         		pctx.stroke();
-         	}
-         
-         		pctx.strokeStyle = playerColor2;
-         	for(var i = 0; i < numrings; i++) {
-         		pctx.beginPath();
-         		pctx.arc(canvasWidth/2,canvasHeight/2+25,r/5*(i+1)-3*lw/2,0,2*Math.PI);
-         		pctx.closePath();
-         		pctx.stroke();
-         	}
-         	for(var i = 0; i < numrings; i++) {
-         		pctx.beginPath();
-         		pctx.arc(canvasWidth/2,-canvasHeight/2+25,r/5*(i+1)-3*lw/2,0,2*Math.PI);
-         		pctx.closePath();
-         		pctx.stroke();
-         	}
-         	for(var i = 0; i < numrings; i++) {
-         		pctx.beginPath();
-         		pctx.arc(-canvasWidth/2,canvasHeight/2+25,r/5*(i+1)-3*lw/2,0,2*Math.PI);
-         		pctx.closePath();
-         		pctx.stroke();
-         	}
-         	for(var i = 0; i < numrings; i++) {
-         		pctx.beginPath();
-         		pctx.arc(-canvasWidth/2,-canvasHeight/2+25,r/5*(i+1)-3*lw/2,0,2*Math.PI);
-         		pctx.closePath();
-         		pctx.stroke();
-         	}
-         	
-         	var img = document.getElementById("testCanvas");
-         	var pat = pctx.createPattern(img,"repeat");
-         
-         	var gdots = new Array();
-         	var rdots = new Array();
-         	
-         	//draw radar
-         	ctx.save();
-         	ctx.fillStyle = pat;
-         	ctx.beginPath();
-         	for (var i = 0; i < curStats.length; i++) { 
-         		
-         		statg = 0;
-         		statr = 0;
-         		
-         		rad = (2*Math.PI/curStats.length)*i + rotOffset;
-         		newr = 2*lw + 8*lw*(playerStats[i]-curStats[i].statMin)/(curStats[i].statMax-curStats[i].statMin);
-         		if(newr > r) {
-         			newr = r;
-         			statg = 1;
-         		}
-         		if(newr < 0) {
-         			newr = 0;
-         			statr = 1;
-         		}
-         		
-         		newy = newr*Math.sin(rad);
-         		newx = newr*Math.cos(rad);
-         		
-         		if(statg == 1)
-         			gdots[gdots.length] = new Array(newx,newy);
-         		if(statr == 1)
-         			rdots[rdots.length] = new Array(newx,newy);
-         			
-         		
-         		if(i == 0)
-         			ctx.moveTo(cx+newx, cy+newy);
-         		else
-         			ctx.lineTo(cx+newx, cy+newy);
-         
-         	}
-         
-         	ctx.closePath();
-         	ctx.fill();
-         	ctx.restore();
-         	
-         	//draw contour
-         	ctx.save();
-         	ctx.strokeStyle = playerColor1;
-         	ctx.lineWidth=1;
-         	ctx.beginPath();
-         	for (var i = 0; i < curStats.length; i++) { 
-         		
-         		statg = 0;
-         		statr = 0;
-         		
-         		rad = (2*Math.PI/curStats.length)*i + rotOffset;
-         		newr = 2*lw + 8*lw*(playerStats[i]-curStats[i].statMin)/(curStats[i].statMax-curStats[i].statMin);
-         		if(newr > r) {
-         			newr = r;
-         			statg = 1;
-         		}
-         		if(newr < 0) {
-         			newr = 0;
-         			statr = 1;
-         		}
-         		
-         		newy = newr*Math.sin(rad);
-         		newx = newr*Math.cos(rad);
-         		
-         		if(statg == 1)
-         			gdots[gdots.length] = new Array(newx,newy);
-         		if(statr == 1)
-         			rdots[rdots.length] = new Array(newx,newy);
-         			
-         		
-         		if(i == 0)
-         			ctx.moveTo(cx+newx, cy+newy);
-         		else
-         			ctx.lineTo(cx+newx, cy+newy);
-         
-         	}
-         
-         	ctx.closePath();
-         	ctx.stroke();
-         	ctx.restore();
-         
-         	//draw info
-         	ctx.save();
-         	ctx.fillStyle = "black";
-         	
-         	ctx.font = "bold 25px Calibri";
-         	ctx.fillText(document.getElementById("playerName").value, -Math.floor(getWidthOfText(document.getElementById("playerName").value,'bold 25px Calibri')/2), -367);
-         	
-         	ctx.font = "bold 18px Calibri";
-         	tempTxt = document.getElementById("playerClub").value + ' (' + document.getElementById("playerLeague").value +')';
-         	ctx.fillText(tempTxt, -Math.floor(getWidthOfText(tempTxt,'bold 18px Calibri')/2), -343);
-         	
-         	ctx.font = "bold 16px Calibri";
-         	tempTxt = document.getElementById("playerSeason").value + '  -  ' + templatename + '  -  ' + document.getElementById("playerAge").value;
-         	ctx.fillText(tempTxt, -Math.floor(getWidthOfText(tempTxt,'bold 16px Calibri')/2), -319);
-         	
-         	ctx.font = "bold 14px Calibri";
-         	ctx.fillText("@DavtyanR2", -Math.floor(getWidthOfText("@DavtyanR2",'bold 14px Calibri')/2), 378);
-         	ctx.fillText("via whoscored", -Math.floor(getWidthOfText("via whoscored",'bold 14px Calibri')/2), 395);
-         	ctx.restore();
-         
-         	//draw labels
-         	ctx.save();
-         	ctx.fillStyle = "black";
-         	ctx.font = "bold " + labelFontSize + "px Arial";
-         	ctx.textAlign = "center";
-         
-         	for (var i = 0; i < curStats.length; i++) { 
-         
-         		rad = (2*Math.PI/curStats.length)*i + rotOffset;
-         		ctx.save();
-         		ctx.translate(0,25);
-         		
-         		if((rad < Math.PI)&&(rad > 0)) {
-         			ctx.rotate(rad-Math.PI/2);
-         			ctx.fillText(curStats[i].statName, 0, r+20);
-         			for(var j = 0; j < 9; j++) {
-         				ctx.font = "bold " + valueFontSize + "px Arial";
-         				ctx.fillText(Math.round((curStats[i].statMin+j*(curStats[i].statMax-curStats[i].statMin)/8)*100)/100, 0, (r/(numrings*2))*(j+1)+lw+3);
-         			}
-         		} else {
-         			ctx.rotate(rad+Math.PI/2);
-         			ctx.fillText(curStats[i].statName, 0, -r-15);
-         			for(var j = 0; j < 9; j++) {
-         				ctx.font = "bold " + valueFontSize + "px Arial";
-         				ctx.fillText(Math.round((curStats[i].statMin+j*(curStats[i].statMax-curStats[i].statMin)/8)*100)/100, 0, -(r/(numrings*2))*(j+1)-lw+valueFontSize/2);
-         			}
-         		}
-         		
-         		
-         		ctx.restore();
-         
-         	}
-         
-         	ctx.translate(0,0);
-         	ctx.restore();
-         	
-         	var dataURL = c.toDataURL();
-         	document.getElementById('canvasImg').src = dataURL;
-         }
-         
-         function fillFW() {
-         	for(var i = 0; i < fwLabels.length; i++) {
-         		document.getElementById('name'+i).value = fwLabels[i].statName;
-         		document.getElementById('min'+i).value = fwLabels[i].statMin;
-         		document.getElementById('max'+i).value = fwLabels[i].statMax;
-         		document.getElementById('stat'+i).value = messiStats[i];
-         	}
-         	templatename = "FW";
-         	drawPlot();
-         }
-         
-         function fillAM() {
-         	for(var i = 0; i < amLabels.length; i++) {
-         		document.getElementById('name'+i).value = amLabels[i].statName;
-         		document.getElementById('min'+i).value = amLabels[i].statMin;
-         		document.getElementById('max'+i).value = amLabels[i].statMax;
-         		document.getElementById('stat'+i).value = messiStats[i];
-         	}
-         	templatename = "AM";
-         	drawPlot();
-         }
-         
-         function fillCM() {
-         	for(var i = 0; i < cmLabels.length; i++) {
-         		document.getElementById('name'+i).value = cmLabels[i].statName;
-         		document.getElementById('min'+i).value = cmLabels[i].statMin;
-         		document.getElementById('max'+i).value = cmLabels[i].statMax;
-         		document.getElementById('stat'+i).value = gerrardStats[i];
-         	}
-         	templatename = "CM";
-         	drawPlot();
-         }
-         
-         function fillFB() {
-         	for(var i = 0; i < fbLabels.length; i++) {
-         		document.getElementById('name'+i).value = fbLabels[i].statName;
-         		document.getElementById('min'+i).value = fbLabels[i].statMin;
-         		document.getElementById('max'+i).value = fbLabels[i].statMax;
-         		document.getElementById('stat'+i).value = alexsandroStats[i];
-         	}
-         	templatename = "FB";
-         	drawPlot();
-         }
-         
-         function fillCB() {
-         	for(var i = 0; i < cbLabels.length; i++) {
-         		document.getElementById('name'+i).value = cbLabels[i].statName;
-         		document.getElementById('min'+i).value = cbLabels[i].statMin;
-         		document.getElementById('max'+i).value = cbLabels[i].statMax;
-         		document.getElementById('stat'+i).value = vandijkStats[i];
-         	}
-         	templatename = "CB";
-         	drawPlot();
-         }
-         
-      </script>
       <div id="numbers">
          <div style='float:left'>
             <table>
@@ -627,17 +632,11 @@
             <img id="canvasImg">
             <script>
                fillFW();
-               
                var currentel = null;
-               
-               
                $('input').focus(function(event) {
                	currentel = this;
                	setTimeout(function(){currentel.setSelectionRange(0, 9999);},30);
-               
                });
-               
-               
             </script>
          </div>
       </div>
