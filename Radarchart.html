@@ -445,9 +445,9 @@
 		
 			ctx.rotate(rad-Math.PI/2);
 			
-			if(playerStats[i] > curStatMax)
+			if(playerStats[i] >= curStatMax)
 				ctx.fillStyle = "green";
-			else if(playerStats[i] < curStatMin)
+			else if(playerStats[i] <= curStatMin)
 				ctx.fillStyle = "red";
 			
 			if(curStatName.substr(curStatName.length - 1) === "%")
@@ -459,9 +459,9 @@
 		
 			ctx.rotate(rad+Math.PI/2);
 			
-			if(playerStats[i] > curStatMax)
+			if(playerStats[i] >= curStatMax)
 				ctx.fillStyle = "green";
-			else if(playerStats[i] < curStatMin)
+			else if(playerStats[i] <= curStatMin)
 				ctx.fillStyle = "red";
 				
 			if(curStatName.substr(curStatName.length - 1) === "%")
