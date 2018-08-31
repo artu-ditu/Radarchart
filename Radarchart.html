@@ -25,11 +25,11 @@
  fwLabels[0] = new StatInfo("Non-Penalty Goals",0.16,0.72);
  fwLabels[1] = new StatInfo("Strzały",1.6,4.4);
  fwLabels[2] = new StatInfo("Strzały w polu karnym",1.3,3.3);
- fwLabels[3] = new StatInfo("Celność strzałów%",38,66);
- fwLabels[4] = new StatInfo("Celność podań%",56,80);
- fwLabels[5] = new StatInfo("Asysty",0.03,0.27);
- fwLabels[6] = new StatInfo("Wykreowane szanse",0.5,1.9);
- fwLabels[7] = new StatInfo("Wygrane w powietrzu",0.3,6.9);
+ fwLabels[3] = new StatInfo("Strzały w polu bramkowym",0.08,0.56);
+ fwLabels[4] = new StatInfo("Celność strzałów%",38,66);
+ fwLabels[5] = new StatInfo("Celność podań%",56,80);
+ fwLabels[6] = new StatInfo("Asysty",0.03,0.27);
+ fwLabels[7] = new StatInfo("Wykreowane szanse",0.5,1.9);
  fwLabels[8] = new StatInfo("Odbiory i przechwyty",0.3,2.2);
  fwLabels[9] = new StatInfo("Utraty posiadania",3.4,0.8);
  fwLabels[10] = new StatInfo("Udane dryblingi%",30,70);
@@ -376,15 +376,15 @@
 	ctx.fillStyle = "black";
 	
 	ctx.font = "bold 25px Calibri";
-	ctx.fillText(document.getElementById("playerName").value, -Math.floor(getWidthOfText(document.getElementById("playerName").value,'bold 25px Calibri')/2), -367);
+	ctx.fillText(document.getElementById("playerName").value, -Math.floor(getWidthOfText(document.getElementById("playerName").value,'bold 25px Calibri')/2), -370);
 	
 	ctx.font = "bold 18px Calibri";
 	tempTxt = document.getElementById("playerClub").value + ' (' + document.getElementById("playerLeague").value +')';
-	ctx.fillText(tempTxt, -Math.floor(getWidthOfText(tempTxt,'bold 18px Calibri')/2), -343);
+	ctx.fillText(tempTxt, -Math.floor(getWidthOfText(tempTxt,'bold 18px Calibri')/2), -346);
 	
 	ctx.font = "bold 16px Calibri";
 	tempTxt = document.getElementById("playerSeason").value + '  -  ' + templatename + '  -  ' + document.getElementById("playerAge").value;
-	ctx.fillText(tempTxt, -Math.floor(getWidthOfText(tempTxt,'bold 16px Calibri')/2), -319);
+	ctx.fillText(tempTxt, -Math.floor(getWidthOfText(tempTxt,'bold 16px Calibri')/2), -322);
 	
 	ctx.font = "bold 14px Calibri";
 	ctx.fillText("@DavtyanR2", -Math.floor(getWidthOfText("@DavtyanR2",'bold 14px Calibri')/2), 378);
@@ -419,16 +419,70 @@
 			}
 		}
 		
+		ctx.restore();
+	}
+ 
+	ctx.translate(0,0);
+	ctx.restore();
+ 
+	//draw stats numbers
+	ctx.save();
+	ctx.fillStyle = "gray";
+	ctx.font = "bold 10px Arial";
+	ctx.textAlign = "center";
+ 
+	for (var i = 0; i < curStats.length; i++) { 
+ 
+		rad = (2*Math.PI/curStats.length)*i + rotOffset;
+		ctx.save();
+		ctx.translate(0,25);
+		
+		var curStatName = curStats[i].statName;
+		var curStatMax = curStats[i].statMax;
+		var curStatMin = curStats[i].statMin;
+		
+		if((rad < Math.PI)&&(rad > 0)) {
+		
+			ctx.rotate(rad-Math.PI/2);
+			
+			if(playerStats[i] > curStatMax)
+				ctx.fillStyle = "green";
+			else if(playerStats[i] < curStatMin)
+				ctx.fillStyle = "red";
+			
+			if(curStatName.substr(curStatName.length - 1) === "%")
+				ctx.fillText(playerStats[i] + "%", 0, r+33);
+			else
+				ctx.fillText(playerStats[i], 0, r+33);
+				
+		} else {
+		
+			ctx.rotate(rad+Math.PI/2);
+			
+			if(playerStats[i] > curStatMax)
+				ctx.fillStyle = "green";
+			else if(playerStats[i] < curStatMin)
+				ctx.fillStyle = "red";
+				
+			if(curStatName.substr(curStatName.length - 1) === "%")
+				ctx.fillText(playerStats[i] + "%", 0, -r-28);
+			else
+				ctx.fillText(playerStats[i], 0, -r-28);
+		}
 		
 		ctx.restore();
- 
 	}
  
 	ctx.translate(0,0);
 	ctx.restore();
 	
+	//prepare image
+	
 	var dataURL = c.toDataURL();
 	document.getElementById('canvasImg').src = dataURL;
+	
+	document.getElementById('link').href = dataURL;
+	document.getElementById('link').download = document.getElementById("playerName").value + " " + document.getElementById("playerSeason").value + " " + document.getElementById("playerClub").value;
  }
  
  function fillFW() {
@@ -632,6 +686,7 @@
             <span class="ilabel">height: </span><input onClick="this.select();" id="cheight" value="800" type="textarea" style="width: 30px;">
          </div>
          <div style='float:left'>
+			<a id="link" href="ImageLocation" download="filename"/>
             <img id="canvasImg">
             <script>
                fillFW();
