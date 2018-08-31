@@ -451,9 +451,9 @@
 				ctx.fillStyle = "red";
 			
 			if(curStatName.substr(curStatName.length - 1) === "%")
-				ctx.fillText(playerStats[i] + "%", 0, r+33);
+				ctx.fillText(Math.round(playerStats[i]*100)/100 + "%", 0, r+33);
 			else
-				ctx.fillText(playerStats[i], 0, r+33);
+				ctx.fillText(Math.round(playerStats[i]*100)/100, 0, r+33);
 				
 		} else {
 		
@@ -465,9 +465,9 @@
 				ctx.fillStyle = "red";
 				
 			if(curStatName.substr(curStatName.length - 1) === "%")
-				ctx.fillText(playerStats[i] + "%", 0, -r-28);
+				ctx.fillText(Math.round(playerStats[i]*100)/100 + "%", 0, -r-28);
 			else
-				ctx.fillText(playerStats[i], 0, -r-28);
+				ctx.fillText(Math.round(playerStats[i]*100)/100, 0, -r-28);
 		}
 		
 		ctx.restore();
