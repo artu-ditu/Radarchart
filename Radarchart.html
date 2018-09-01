@@ -445,10 +445,18 @@
 		
 			ctx.rotate(rad-Math.PI/2);
 			
-			if(playerStats[i] >= curStatMax)
-				ctx.fillStyle = "green";
-			else if(playerStats[i] <= curStatMin)
-				ctx.fillStyle = "red";
+			if(curStatMax > curStatMin){
+				if(playerStats[i] >= curStatMax)
+					ctx.fillStyle = "green";
+				else if(playerStats[i] <= curStatMin)
+					ctx.fillStyle = "red";
+			}
+			else{
+				if(playerStats[i] <= curStatMax)
+					ctx.fillStyle = "green";
+				else if(playerStats[i] >= curStatMin)
+					ctx.fillStyle = "red";
+			}
 			
 			if(curStatName.substr(curStatName.length - 1) === "%")
 				ctx.fillText(Math.round(playerStats[i]*10)/10 + "%", 0, r+33);
@@ -459,10 +467,18 @@
 		
 			ctx.rotate(rad+Math.PI/2);
 			
-			if(playerStats[i] >= curStatMax)
-				ctx.fillStyle = "green";
-			else if(playerStats[i] <= curStatMin)
-				ctx.fillStyle = "red";
+			if(curStatMax > curStatMin){
+				if(playerStats[i] >= curStatMax)
+					ctx.fillStyle = "green";
+				else if(playerStats[i] <= curStatMin)
+					ctx.fillStyle = "red";
+			}
+			else{
+				if(playerStats[i] <= curStatMax)
+					ctx.fillStyle = "green";
+				else if(playerStats[i] >= curStatMin)
+					ctx.fillStyle = "red";
+			}
 				
 			if(curStatName.substr(curStatName.length - 1) === "%")
 				ctx.fillText(Math.round(playerStats[i]*10)/10 + "%", 0, -r-28);
