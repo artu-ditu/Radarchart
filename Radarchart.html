@@ -153,6 +153,7 @@
 			
 			if(curStats[count].statName == "Udane odbiory PAdj"
 				|| curStats[count].statName == "Przechwyty PAdj" 
+				|| curStats[count].statName == "Zablokowane podania PAdj" 
 				|| curStats[count].statName == "Wybicia PAdj") 
 				playerStats[count] = playerStats[count] * 2/(1 + Math.pow(2.71828,(-0.1*(document.getElementById("possession").value-50))));
 			
