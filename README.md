@@ -1,2 +1,2 @@
 # Radarchart
-Przerobiony do własnych potrzeb (wizualizacja statystyk piłkarskich) generator wykresów radarowych znaleziony w internecie.
+Generator wykresów radarowych przeznaczony do wizualizacji statystyk piłkarskich.
