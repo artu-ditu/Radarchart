@@ -376,15 +376,21 @@
 		ctx.fillStyle = "black";
 		
 		ctx.font = "bold 25px Calibri";
-		ctx.fillText(document.getElementById("playerName").value, -Math.floor(getWidthOfText(document.getElementById("playerName").value,'bold 25px Calibri')/2), -370);
+		ctx.fillText(document.getElementById("playerName").value,
+					-Math.floor(getWidthOfText(document.getElementById("playerName").value,'bold 25px Calibri')/2),
+					-370);
 		
 		ctx.font = "bold 18px Calibri";
 		tempTxt = document.getElementById("playerClub").value + ' (' + document.getElementById("playerLeague").value +')';
-		ctx.fillText(tempTxt, -Math.floor(getWidthOfText(tempTxt,'bold 18px Calibri')/2), -346);
+		ctx.fillText(tempTxt,
+					-Math.floor(getWidthOfText(tempTxt,'bold 18px Calibri')/2),
+					-346);
 		
 		ctx.font = "bold 16px Calibri";
 		tempTxt = document.getElementById("playerSeason").value + '  -  ' + templatename + '  -  ' + document.getElementById("playerAge").value;
-		ctx.fillText(tempTxt, -Math.floor(getWidthOfText(tempTxt,'bold 16px Calibri')/2), -322);
+		ctx.fillText(tempTxt,
+					-Math.floor(getWidthOfText(tempTxt,'bold 16px Calibri')/2),
+					-322);
 		
 		ctx.font = "bold 14px Calibri";
 		ctx.fillText("@DavtyanR2", -Math.floor(getWidthOfText("@DavtyanR2",'bold 14px Calibri')/2), 378);
