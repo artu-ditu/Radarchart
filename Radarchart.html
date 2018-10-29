@@ -1,11 +1,12 @@
 <script>
 
-	var messiStats = new Array(0.79,5.71,45.9,85.1,0.40,2.70,0.40,0.58,2.48,2.4,66,15,15);
-	var gerrardStats = new Array(86.2,1.98,.24,.44,.48,.62,1.06,50,2.98,1.51,7.49,15,15);
-	var alexsandroStats = new Array(2.415,2.22,84.6,1.95,1.37,31.5,1.91,1.44,1.6,1.675,79.48,15,15);
-	var vandijkStats = new Array(84.2,84.8,1.9,2.6,6.9,0.73,0.87,75.4,4.75,62.6,4.71,15,15);
+	var forwardStats = new Array(6,57,44,11,23,55,77,5,11,41,31,21,16);
+	var attackerStats = new Array(4,21,33,79,6,36,31,6,71,58,21,11,21);
+	var midfielderStats = new Array(86,21,3,14,15,4,7,61,12,6,7,63,41);
+	var fullbackStats = new Array(24,31,83,21,5,26,13,24,27,3,3,2,81);
+	var centrebackStats = new Array(84,87,21,26,71,6,16,3,63,23,1,58,47);
 	
-	var playerStats = messiStats.slice(0);
+	var playerStats = forwardStats.slice(0);
 	
 	function StatInfo(statName,statMin,statMax) {
 		this.statName = statName;
@@ -88,7 +89,7 @@
 	cbLabels[11] = new StatInfo("Celność długich podań%",40,76);
 	cbLabels[12] = new StatInfo("Celne długie podania",2,6.4);
 	
-	var curStats = fwLabels;
+	var templateStats = fwLabels;
 	var canvasHeight = 800;
 	var canvasWidth = 700;
 
@@ -104,11 +105,13 @@
 	rotOffset = -Math.PI/2;
 	
 	function getWidthOfText(txt, font){
+
 		if(getWidthOfText.c === undefined){
 			getWidthOfText.c=document.createElement('canvas');
 			getWidthOfText.ctx=getWidthOfText.c.getContext('2d');
 		}
 		getWidthOfText.ctx.font = font;
+
 		return getWidthOfText.ctx.measureText(txt).width;
 	}
 	
@@ -138,30 +141,32 @@
 			playerColor1noalpha = "rgba(" + canvasRed2 + ", " + canvasGreen2 + ", " + canvasBlue2 + ", 1)";
 		}
 		
-		curStats = new Array();
+		templateStats = new Array();
 		var count = 0;
 		
+		var minutes = document.getElementById("minutes").value;
+
 		//wczytanie statystyk gracza
 		for(var j = 0; j < 13; j++) {
 		
 			if(document.getElementById("name"+j).value != "") {
 			
-				curStats[count] = new StatInfo(document.getElementById("name"+j).value,
+				templateStats[count] = new StatInfo(document.getElementById("name"+j).value,
 					parseFloat(document.getElementById("min"+j).value),
 					parseFloat(document.getElementById("max"+j).value));
 				
 				playerStats[count] = parseFloat(document.getElementById("stat"+j).value);
 				
-				if(curStats[count].statName == "Udane odbiory PAdj"
-					|| curStats[count].statName == "Przechwyty PAdj" 
-					|| curStats[count].statName == "Zablokowane podania PAdj" 
-					|| curStats[count].statName == "Wybicia PAdj") 
+				if(templateStats[count].statName.substr(templateStats[count].statName.length - 1) != "%")
+					playerStats[count] = playerStats[count] * 90 / minutes;
+
+				if(templateStats[count].statName == "Udane odbiory PAdj"
+					|| templateStats[count].statName == "Przechwyty PAdj" 
+					|| templateStats[count].statName == "Zablokowane podania PAdj" 
+					|| templateStats[count].statName == "Wybicia PAdj") 
 					playerStats[count] = playerStats[count] * 2/(1 + Math.pow(2.71828,(-0.1*(document.getElementById("possession").value-50))));
 				
-				if(curStats[count].statName == "Utraty posiadania PAdj") 
-					playerStats[count] = playerStats[count] * 2/(1 + Math.pow(2.71828,(0.1*(document.getElementById("possession").value-50))));
-				
-				if(curStats[count].statName == "Bloki/strzały")
+				if(templateStats[count].statName == "Bloki/strzały")
 					playerStats[count] = playerStats[count]/document.getElementById("shotsfaced").value;
 					
 				count++;
@@ -296,13 +301,13 @@
 		ctx.save();
 		ctx.fillStyle = pat;
 		ctx.beginPath();
-		for (var i = 0; i < curStats.length; i++) { 
+		for (var i = 0; i < templateStats.length; i++) { 
 			
 			statg = 0;
 			statr = 0;
 			
-			rad = (2*Math.PI/curStats.length)*i + rotOffset;
-			newr = 2*lw + 8*lw*(playerStats[i]-curStats[i].statMin)/(curStats[i].statMax-curStats[i].statMin);
+			rad = (2*Math.PI/templateStats.length)*i + rotOffset;
+			newr = 2*lw + 8*lw*(playerStats[i]-templateStats[i].statMin)/(templateStats[i].statMax-templateStats[i].statMin);
 			if(newr > r) {
 				newr = r;
 				statg = 1;
@@ -336,13 +341,13 @@
 		ctx.strokeStyle = playerColor1;
 		ctx.lineWidth=1;
 		ctx.beginPath();
-		for (var i = 0; i < curStats.length; i++) { 
+		for (var i = 0; i < templateStats.length; i++) { 
 			
 			statg = 0;
 			statr = 0;
 			
-			rad = (2*Math.PI/curStats.length)*i + rotOffset;
-			newr = 2*lw + 8*lw*(playerStats[i]-curStats[i].statMin)/(curStats[i].statMax-curStats[i].statMin);
+			rad = (2*Math.PI/templateStats.length)*i + rotOffset;
+			newr = 2*lw + 8*lw*(playerStats[i]-templateStats[i].statMin)/(templateStats[i].statMax-templateStats[i].statMin);
 			if(newr > r) {
 				newr = r;
 				statg = 1;
@@ -378,23 +383,23 @@
 		ctx.font = "bold 25px Calibri";
 		ctx.fillText(document.getElementById("playerName").value,
 					-Math.floor(getWidthOfText(document.getElementById("playerName").value,'bold 25px Calibri')/2),
-					-370);
+					-canvasHeight/2 + 30);
 		
 		ctx.font = "bold 18px Calibri";
 		tempTxt = document.getElementById("playerClub").value + ' (' + document.getElementById("playerLeague").value +')';
 		ctx.fillText(tempTxt,
 					-Math.floor(getWidthOfText(tempTxt,'bold 18px Calibri')/2),
-					-346);
+					-canvasHeight/2 + 54);
 		
 		ctx.font = "bold 16px Calibri";
 		tempTxt = document.getElementById("playerSeason").value + '  -  ' + templatename + '  -  ' + document.getElementById("playerAge").value;
 		ctx.fillText(tempTxt,
 					-Math.floor(getWidthOfText(tempTxt,'bold 16px Calibri')/2),
-					-322);
+					-canvasHeight/2 + 78);
 		
 		ctx.font = "bold 14px Calibri";
-		ctx.fillText("@DavtyanR2", -Math.floor(getWidthOfText("@DavtyanR2",'bold 14px Calibri')/2), 378);
-		ctx.fillText("via whoscored", -Math.floor(getWidthOfText("via whoscored",'bold 14px Calibri')/2), 395);
+		ctx.fillText("@DavtyanR2", -Math.floor(getWidthOfText("@DavtyanR2",'bold 14px Calibri')/2), canvasHeight/2 - 22);
+		ctx.fillText("via whoscored", -Math.floor(getWidthOfText("via whoscored",'bold 14px Calibri')/2), canvasHeight/2 - 5);
 		ctx.restore();
 	
 		//rysowanie labeli
@@ -403,26 +408,26 @@
 		ctx.font = "bold " + labelFontSize + "px Arial";
 		ctx.textAlign = "center";
 	
-		for (var i = 0; i < curStats.length; i++) { 
+		for (var i = 0; i < templateStats.length; i++) { 
 	
-			rad = (2*Math.PI/curStats.length)*i + rotOffset;
+			rad = (2*Math.PI/templateStats.length)*i + rotOffset;
 
 			ctx.save();
 			ctx.translate(0,25);
 			
 			if((rad < Math.PI)&&(rad > 0)) {
 				ctx.rotate(rad-Math.PI/2);
-				ctx.fillText(curStats[i].statName, 0, r+20);
+				ctx.fillText(templateStats[i].statName, 0, r+20);
 				for(var j = 0; j < 9; j++) {
 					ctx.font = "bold " + valueFontSize + "px Arial";
-					ctx.fillText(Math.round((curStats[i].statMin+j*(curStats[i].statMax-curStats[i].statMin)/8)*100)/100, 0, (r/(numrings*2))*(j+1)+lw+3);
+					ctx.fillText(Math.round((templateStats[i].statMin+j*(templateStats[i].statMax-templateStats[i].statMin)/8)*100)/100, 0, (r/(numrings*2))*(j+1)+lw+3);
 				}
 			} else {
 				ctx.rotate(rad+Math.PI/2);
-				ctx.fillText(curStats[i].statName, 0, -r-15);
+				ctx.fillText(templateStats[i].statName, 0, -r-15);
 				for(var j = 0; j < 9; j++) {
 					ctx.font = "bold " + valueFontSize + "px Arial";
-					ctx.fillText(Math.round((curStats[i].statMin+j*(curStats[i].statMax-curStats[i].statMin)/8)*100)/100, 0, -(r/(numrings*2))*(j+1)-lw+valueFontSize/2);
+					ctx.fillText(Math.round((templateStats[i].statMin+j*(templateStats[i].statMax-templateStats[i].statMin)/8)*100)/100, 0, -(r/(numrings*2))*(j+1)-lw+valueFontSize/2);
 				}
 			}
 			
@@ -439,15 +444,15 @@
 		ctx.font = "bold 10px Arial";
 		ctx.textAlign = "center";
 	
-		for (var i = 0; i < curStats.length; i++) { 
+		for (var i = 0; i < templateStats.length; i++) { 
 	
-			rad = (2*Math.PI/curStats.length)*i + rotOffset;
+			rad = (2*Math.PI/templateStats.length)*i + rotOffset;
 			ctx.save();
 			ctx.translate(0,25);
 			
-			var curStatName = curStats[i].statName;
-			var curStatMax = curStats[i].statMax;
-			var curStatMin = curStats[i].statMin;
+			var curStatName = templateStats[i].statName;
+			var curStatMax = templateStats[i].statMax;
+			var curStatMin = templateStats[i].statMin;
 			
 			if ((rad < Math.PI)&&(rad > 0)) {
 			
@@ -517,7 +522,7 @@
 			document.getElementById('name'+i).value = fwLabels[i].statName;
 			document.getElementById('min'+i).value = fwLabels[i].statMin;
 			document.getElementById('max'+i).value = fwLabels[i].statMax;
-			document.getElementById('stat'+i).value = messiStats[i];
+			document.getElementById('stat'+i).value = forwardStats[i];
 		}
 		templatename = "FW";
 		drawPlot();
@@ -528,7 +533,7 @@
 			document.getElementById('name'+i).value = amLabels[i].statName;
 			document.getElementById('min'+i).value = amLabels[i].statMin;
 			document.getElementById('max'+i).value = amLabels[i].statMax;
-			document.getElementById('stat'+i).value = messiStats[i];
+			document.getElementById('stat'+i).value = attackerStats[i];
 		}
 		templatename = "AM";
 		drawPlot();
@@ -539,7 +544,7 @@
 			document.getElementById('name'+i).value = cmLabels[i].statName;
 			document.getElementById('min'+i).value = cmLabels[i].statMin;
 			document.getElementById('max'+i).value = cmLabels[i].statMax;
-			document.getElementById('stat'+i).value = gerrardStats[i];
+			document.getElementById('stat'+i).value = midfielderStats[i];
 		}
 		templatename = "CM";
 		drawPlot();
@@ -550,7 +555,7 @@
 			document.getElementById('name'+i).value = fbLabels[i].statName;
 			document.getElementById('min'+i).value = fbLabels[i].statMin;
 			document.getElementById('max'+i).value = fbLabels[i].statMax;
-			document.getElementById('stat'+i).value = alexsandroStats[i];
+			document.getElementById('stat'+i).value = fullbackStats[i];
 		}
 		templatename = "FB";
 		drawPlot();
@@ -561,177 +566,233 @@
 			document.getElementById('name'+i).value = cbLabels[i].statName;
 			document.getElementById('min'+i).value = cbLabels[i].statMin;
 			document.getElementById('max'+i).value = cbLabels[i].statMax;
-			document.getElementById('stat'+i).value = vandijkStats[i];
+			document.getElementById('stat'+i).value = centrebackStats[i];
 		}
 		templatename = "CB";
 		drawPlot();
+	}
+
+	function setMinSize() {
+		if (document.getElementById("cwidth").value < 700)
+			document.getElementById("cwidth").value = 700;
+		document.getElementById("cheight").value = parseInt(document.getElementById("cwidth").value) + 100;
 	}
  
 </script>
 
 <html>
+
    <head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-      <title>Radarchart</title>
+    	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>Radarchart</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<style>
+			input[class="snumber"]{
+				width: 30px;
+			}
+			input[class="slabel"]{
+				width: 60px;
+			}
+			input[class="sinfo"]{
+				width: 50%;
+			}
+			button[class="buttonPosition"]{
+				width: 30px;
+				font-size: 10px;
+				text-align: center;
+				background-color: rgb(255, 150, 60);
+				border: none;
+				padding: 5px;
+				display: table-cell;
+				vertical-align: middle;
+			}
+			button[class="buttonRedraw"]{
+				width: 165px;
+				font-size: 10px;
+				text-align: center;
+				background-color: rgb(255, 150, 60);
+				border: none;
+				padding: 5px;
+				display: table-cell;
+				vertical-align: middle;
+			}
+			.container {
+				width: 100%;
+			}
+			.child-left {
+				width: 170px;
+				float: left;
+			}
+			.child-right {
+				width: 100%;
+			}
+		</style>
    </head>
+
    <body>
-      <canvas id="myCanvas" width="700" height="800" style="border:1px solid #000000; display: none"></canvas>
-      <canvas id="testCanvas" width="700" height="800" style="border:1px solid #000000; display: none"></canvas>
-      <div id="numbers">
-         <div style='float:left'>
-            <table>
-               <thead>
-                  <tr>
-                     <td>stat name</td>
-                     <td>min</td>
-                     <td>max</td>
-                     <td>val</td>
-                  </tr>
-               </thead>
-               <tbody>
-                  <tr>
-                     <td><input onClick="this.select();" id="name0" type="text" class="slabel" size="5"></td>
-                     <td><input onClick="this.select();" id="min0" type="text" class="snumber" style="width: 30px;"></td>
-                     <td><input onClick="this.select();" id="max0" type="text" class="snumber" style="width: 30px;"></td>
-                     <td><input onClick="this.select();" id="stat0" type="textarea" style="width: 30px;"></td>
-                  </tr>
-                  <tr>
-                     <td><input onClick="this.select();" id="name1" type="text" class="slabel" size="5"></td>
-                     <td><input onClick="this.select();" id="min1" type="text" class="snumber" style="width: 30px;"></td>
-                     <td><input onClick="this.select();" id="max1" type="text" class="snumber" style="width: 30px;"></td>
-                     <td><input onClick="this.select();" id="stat1" type="textarea" style="width: 30px;"></td>
-                  </tr>
-                  <tr>
-                     <td><input onClick="this.select();" id="name2" type="text" class="slabel" size="5"></td>
-                     <td><input onClick="this.select();" id="min2" type="text" class="snumber" style="width: 30px;"></td>
-                     <td><input onClick="this.select();" id="max2" type="text" class="snumber" style="width: 30px;"></td>
-                     <td><input onClick="this.select();" id="stat2" type="textarea" style="width: 30px;"></td>
-                  </tr>
-                  <tr>
-                     <td><input onClick="this.select();" id="name3" type="text" class="slabel" size="5"></td>
-                     <td><input onClick="this.select();" id="min3" type="text" class="snumber" style="width: 30px;"></td>
-                     <td><input onClick="this.select();" id="max3" type="text" class="snumber" style="width: 30px;"></td>
-                     <td><input onClick="this.select();" id="stat3" type="textarea" style="width: 30px;"></td>
-                  </tr>
-                  <tr>
-                     <td><input onClick="this.select();" id="name4" type="text" class="slabel" size="5"></td>
-                     <td><input onClick="this.select();" id="min4" type="text" class="snumber" style="width: 30px;"></td>
-                     <td><input onClick="this.select();" id="max4" type="text" class="snumber" style="width: 30px;"></td>
-                     <td><input onClick="this.select();" id="stat4" type="textarea" style="width: 30px;"></td>
-                  </tr>
-                  <tr>
-                     <td><input onClick="this.select();" id="name5" type="text" class="slabel" size="5"></td>
-                     <td><input onClick="this.select();" id="min5" type="text" class="snumber" style="width: 30px;"></td>
-                     <td><input onClick="this.select();" id="max5" type="text" class="snumber" style="width: 30px;"></td>
-                     <td><input onClick="this.select();" id="stat5" type="textarea" style="width: 30px;"></td>
-                  </tr>
-                  <tr>
-                     <td><input onClick="this.select();" id="name6" type="text" class="slabel" size="5"></td>
-                     <td><input onClick="this.select();" id="min6" type="text" class="snumber" style="width: 30px;"></td>
-                     <td><input onClick="this.select();" id="max6" type="text" class="snumber" style="width: 30px;"></td>
-                     <td><input onClick="this.select();" id="stat6" type="textarea" style="width: 30px;"></td>
-                  </tr>
-                  <tr>
-                     <td><input onClick="this.select();" id="name7" type="text" class="slabel" size="5"></td>
-                     <td><input onClick="this.select();" id="min7" type="text" class="snumber" style="width: 30px;"></td>
-                     <td><input onClick="this.select();" id="max7" type="text" class="snumber" style="width: 30px;"></td>
-                     <td><input onClick="this.select();" id="stat7" type="textarea" style="width: 30px;"></td>
-                  </tr>
-                  <tr>
-                     <td><input onClick="this.select();" id="name8" type="text" class="slabel" size="5"></td>
-                     <td><input onClick="this.select();" id="min8" type="text" class="snumber" style="width: 30px;"></td>
-                     <td><input onClick="this.select();" id="max8" type="text" class="snumber" style="width: 30px;"></td>
-                     <td><input onClick="this.select();" id="stat8" type="textarea" style="width: 30px;"></td>
-                  </tr>
-                  <tr>
-                     <td><input onClick="this.select();" id="name9" type="text" class="slabel" size="5"></td>
-                     <td><input onClick="this.select();" id="min9" type="text" class="snumber" style="width: 30px;"></td>
-                     <td><input onClick="this.select();" id="max9" type="text" class="snumber" style="width: 30px;"></td>
-                     <td><input onClick="this.select();" id="stat9" type="textarea" style="width: 30px;"></td>
-                  </tr>
-                  <tr>
-                     <td><input onClick="this.select();" id="name10" type="text" class="slabel" size="5"></td>
-                     <td><input onClick="this.select();" id="min10" type="text" class="snumber" style="width: 30px;"></td>
-                     <td><input onClick="this.select();" id="max10" type="text" class="snumber" style="width: 30px;"></td>
-                     <td><input onClick="this.select();" id="stat10" type="textarea" style="width: 30px;"></td>
-                  </tr>
-                  <tr>
-                     <td><input onClick="this.select();" id="name11" type="text" class="slabel" size="5"></td>
-                     <td><input onClick="this.select();" id="min11" type="text" class="snumber" style="width: 30px;"></td>
-                     <td><input onClick="this.select();" id="max11" type="text" class="snumber" style="width: 30px;"></td>
-                     <td><input onClick="this.select();" id="stat11" type="textarea" style="width: 30px;"></td>
-                  </tr>
-                  <tr>
-                     <td><input onClick="this.select();" id="name12" type="text" class="slabel" size="5"></td>
-                     <td><input onClick="this.select();" id="min12" type="text" class="snumber" style="width: 30px;"></td>
-                     <td><input onClick="this.select();" id="max12" type="text" class="snumber" style="width: 30px;"></td>
-                     <td><input onClick="this.select();" id="stat12" type="textarea" style="width: 30px;"></td>
-                  </tr>
-               </tbody>
-            </table>
-            <span class="ilabel">possession: </span><input onClick="this.select();" id="possession" value="50" type="textarea" style="width: 30px;">
-            <br>
-            <span class="ilabel">shotsfaced: </span><input onClick="this.select();" id="shotsfaced" value="12" type="textarea" style="width: 30px;">
-            <br>
-            <br>
-            <button onclick="fillFW()" class="button template" style="width: 20px; font-size: 10px">FW</button>&nbsp|
-            <button onclick="fillAM()" class="button template" style="width: 20px; font-size: 10px">AM</button>&nbsp|
-            <button onclick="fillCM()" class="button template" style="width: 20px; font-size: 10px">CM</button>&nbsp|
-            <button onclick="fillFB()" class="button template" style="width: 20px; font-size: 10px">FB</button>&nbsp|
-            <button onclick="fillCB()" class="button template" style="width: 20px; font-size: 10px">CB</button>
-            <br>
-            <br>
-            <button onclick="drawPlot()" class="button">Draw new plot</button>
-            <br>
-            <br>
-            <span class="ilabel">name: </span><input onClick="this.select();" id="playerName" value="John Doe" type="text" class="slabel" size="10">
-            <br>
-            <span class="ilabel">birthdate: </span><input onClick="this.select();" id="playerAge" value="12-12-1992" type="text" class="slabel" size="10">
-            <br>
-            <span class="ilabel">season: </span><input onClick="this.select();" id="playerSeason" value="17/18" type="text" class="slabel" size="10">
-            <br>
-            <span class="ilabel">club: </span><input onClick="this.select();" id="playerClub" value="Liverpool" type="text" class="slabel" size="10">
-            <br>
-            <span class="ilabel">league: </span><input onClick="this.select();" id="playerLeague" value="Premier League" type="text" class="slabel" size="10">
-            <br>
-            <br>
-            color1
-            <br>
-            <span class="ilabel">R: </span><input onClick="this.select();" id="redRGB1" value="205" type="textarea" style="width: 30px;">
-            <span class="ilabel">G: </span><input onClick="this.select();" id="greenRGB1" value="0" type="textarea" style="width: 30px;">
-            <span class="ilabel">B: </span><input onClick="this.select();" id="blueRGB1" value="30" type="textarea" style="width: 30px;">
-            <br>
-            <br>
-            color2
-            <br>
-            <span class="ilabel">R: </span><input onClick="this.select();" id="redRGB2" value="60" type="textarea" style="width: 30px;">
-            <span class="ilabel">G: </span><input onClick="this.select();" id="greenRGB2" value="180" type="textarea" style="width: 30px;">
-            <span class="ilabel">B: </span><input onClick="this.select();" id="blueRGB2" value="180" type="textarea" style="width: 30px;">
-            <br>
-            <br>
-            <span class="ilabel">width: </span><input onClick="this.select();" id="cwidth" value="700" type="textarea" style="width: 30px;">
-            <br>
-            <span class="ilabel">height: </span><input onClick="this.select();" id="cheight" value="800" type="textarea" style="width: 30px;">
-         </div>
-         <div style='float:left'>
-			<a id="link" download="filename"/>
-            <img id="canvasImg">
-            <script>
-               fillFW();
-               var currentel = null;
-               $('input').focus(function(event) {
-               	currentel = this;
-               	setTimeout(function(){currentel.setSelectionRange(0, 9999);},30);
-               });
-            </script>
-         </div>
-      </div>
-      <div style="background: rgba(135, 206, 235, 0.7); border: 3px double; box-sizing: content-box; display: none; pointer-events: none; position: absolute; z-index: 32767;"></div>
-      <textarea style="border-radius: 0px; margin: 0px; opacity: 0; position: absolute; top: -32767px; z-index: 32767;"></textarea>
-      <table style="border-collapse: collapse; visibility: hidden;">
-         <tr>
-            <td style="border: 1px solid; padding: 0px; width: 1px;"></td>
-         </tr>
-      </table>
+
+		<canvas id="myCanvas" width="700" height="800" style="border:1px solid #000000; display: none"></canvas>
+		<canvas id="testCanvas" width="700" height="800" style="border:1px solid #000000; display: none"></canvas>
+
+		<div class="container">
+
+			<div class="child-left">
+			
+				<button onclick="fillFW()" class="buttonPosition">FW</button>
+				<button onclick="fillAM()" class="buttonPosition">AM</button>
+				<button onclick="fillCM()" class="buttonPosition">CM</button>
+				<button onclick="fillFB()" class="buttonPosition">FB</button>
+				<button onclick="fillCB()" class="buttonPosition">CB</button>
+				<br>
+				<br>
+				<button onclick="drawPlot()" class="buttonRedraw">Redraw</button>
+				<br>
+				<br>
+				<table>
+					<thead>
+						<tr>
+							<td>stat</td>
+							<td>min</td>
+							<td>max</td>
+							<td>val</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td><input onClick="this.select();" id="name0" type="text" class="slabel"></td>
+							<td><input onClick="this.select();" id="min0" type="text" class="snumber"></td>
+							<td><input onClick="this.select();" id="max0" type="text" class="snumber"></td>
+							<td><input onClick="this.select();" id="stat0" type="text" class="snumber"></td>
+						</tr>
+						<tr>
+							<td><input onClick="this.select();" id="name1" type="text" class="slabel"></td>
+							<td><input onClick="this.select();" id="min1" type="text" class="snumber"></td>
+							<td><input onClick="this.select();" id="max1" type="text" class="snumber"></td>
+							<td><input onClick="this.select();" id="stat1" type="text" class="snumber"></td>
+						</tr>
+						<tr>
+							<td><input onClick="this.select();" id="name2" type="text" class="slabel"></td>
+							<td><input onClick="this.select();" id="min2" type="text" class="snumber"></td>
+							<td><input onClick="this.select();" id="max2" type="text" class="snumber"></td>
+							<td><input onClick="this.select();" id="stat2" type="text" class="snumber"></td>
+						</tr>
+						<tr>
+							<td><input onClick="this.select();" id="name3" type="text" class="slabel"></td>
+							<td><input onClick="this.select();" id="min3" type="text" class="snumber"></td>
+							<td><input onClick="this.select();" id="max3" type="text" class="snumber"></td>
+							<td><input onClick="this.select();" id="stat3" type="text" class="snumber"></td>
+						</tr>
+						<tr>
+							<td><input onClick="this.select();" id="name4" type="text" class="slabel"></td>
+							<td><input onClick="this.select();" id="min4" type="text" class="snumber"></td>
+							<td><input onClick="this.select();" id="max4" type="text" class="snumber"></td>
+							<td><input onClick="this.select();" id="stat4" type="text" class="snumber"></td>
+						</tr>
+						<tr>
+							<td><input onClick="this.select();" id="name5" type="text" class="slabel"></td>
+							<td><input onClick="this.select();" id="min5" type="text" class="snumber"></td>
+							<td><input onClick="this.select();" id="max5" type="text" class="snumber"></td>
+							<td><input onClick="this.select();" id="stat5" type="text" class="snumber"></td>
+						</tr>
+						<tr>
+							<td><input onClick="this.select();" id="name6" type="text" class="slabel"></td>
+							<td><input onClick="this.select();" id="min6" type="text" class="snumber"></td>
+							<td><input onClick="this.select();" id="max6" type="text" class="snumber"></td>
+							<td><input onClick="this.select();" id="stat6" type="text" class="snumber"></td>
+						</tr>
+						<tr>
+							<td><input onClick="this.select();" id="name7" type="text" class="slabel"></td>
+							<td><input onClick="this.select();" id="min7" type="text" class="snumber"></td>
+							<td><input onClick="this.select();" id="max7" type="text" class="snumber"></td>
+							<td><input onClick="this.select();" id="stat7" type="text" class="snumber"></td>
+						</tr>
+						<tr>
+							<td><input onClick="this.select();" id="name8" type="text" class="slabel"></td>
+							<td><input onClick="this.select();" id="min8" type="text" class="snumber"></td>
+							<td><input onClick="this.select();" id="max8" type="text" class="snumber"></td>
+							<td><input onClick="this.select();" id="stat8" type="text" class="snumber"></td>
+						</tr>
+						<tr>
+							<td><input onClick="this.select();" id="name9" type="text" class="slabel"></td>
+							<td><input onClick="this.select();" id="min9" type="text" class="snumber"></td>
+							<td><input onClick="this.select();" id="max9" type="text" class="snumber"></td>
+							<td><input onClick="this.select();" id="stat9" type="text" class="snumber"></td>
+						</tr>
+						<tr>
+							<td><input onClick="this.select();" id="name10" type="text" class="slabel"></td>
+							<td><input onClick="this.select();" id="min10" type="text" class="snumber"></td>
+							<td><input onClick="this.select();" id="max10" type="text" class="snumber"></td>
+							<td><input onClick="this.select();" id="stat10" type="text" class="snumber"></td>
+						</tr>
+						<tr>
+							<td><input onClick="this.select();" id="name11" type="text" class="slabel"></td>
+							<td><input onClick="this.select();" id="min11" type="text" class="snumber"></td>
+							<td><input onClick="this.select();" id="max11" type="text" class="snumber"></td>
+							<td><input onClick="this.select();" id="stat11" type="text" class="snumber"></td>
+						</tr>
+						<tr>
+							<td><input onClick="this.select();" id="name12" type="text" class="slabel"></td>
+							<td><input onClick="this.select();" id="min12" type="text" class="snumber"></td>
+							<td><input onClick="this.select();" id="max12" type="text" class="snumber"></td>
+							<td><input onClick="this.select();" id="stat12" type="text" class="snumber"></td>
+						</tr>
+					</tbody>
+				</table>
+				<br>
+				minutes: <input onClick="this.select();" id="minutes" value="900" type="text" class="sinfo">
+				<br>
+				possession: <input onClick="this.select();" id="possession" value="50" type="text" class="sinfo">
+				<br>
+				shotsfaced: <input onClick="this.select();" id="shotsfaced" value="12" type="text" class="sinfo">
+				<br>
+				<br>
+				name: <input onClick="this.select();" id="playerName" value="XYZ" type="text" class="sinfo">
+				<br>
+				birthdate: <input onClick="this.select();" id="playerAge" value="dd-mm-yyyy" type="text" class="sinfo">
+				<br>
+				season: <input onClick="this.select();" id="playerSeason" value="18/19" type="text" class="sinfo">
+				<br>
+				club: <input onClick="this.select();" id="playerClub" value="Liverpool" type="text" class="sinfo">
+				<br>
+				league: <input onClick="this.select();" id="playerLeague" value="Premier League" type="text" class="sinfo">
+				<br>
+				<br>
+				color1:
+				<br>
+				R: <input onClick="this.select();" id="redRGB1" value="205" type="text" class="snumber">
+				G: <input onClick="this.select();" id="greenRGB1" value="0" type="text" class="snumber">
+				B: <input onClick="this.select();" id="blueRGB1" value="30" type="text" class="snumber">
+				<br>
+				color2:
+				<br>
+				R: <input onClick="this.select();" id="redRGB2" value="60" type="text" class="snumber">
+				G: <input onClick="this.select();" id="greenRGB2" value="180" type="text" class="snumber">
+				B: <input onClick="this.select();" id="blueRGB2" value="180" type="text" class="snumber">
+				<br>
+				<br>
+				width: <input onClick="this.select();" onblur="setMinSize();" id="cwidth" value="700" min="700" type="number" class="sinfo">
+				<br>
+				height: <input onClick="this.select();" onblur="setMinSize();" id="cheight" value="800" min="800" type="number" class="sinfo" disabled>
+			
+			</div>
+		
+			<div class="child-right">
+			
+				<a id="link" download="filename">
+				<img id="canvasImg">
+				
+				<script>
+					fillFW();
+					var currentel = null;
+					$('input').focus(function(event) {
+						currentel = this;
+						setTimeout(function(){currentel.setSelectionRange(0, 9999);},30);
+					});
+				</script>
+			
+			</div>
+
+		</div>
+
    </body>
 </html>
