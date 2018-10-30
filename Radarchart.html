@@ -1,3 +1,4 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
 
 	var forwardStats = new Array(6,57,44,11,23,55,77,5,11,41,31,21,16);
@@ -577,7 +578,7 @@
 			document.getElementById("cwidth").value = 700;
 		document.getElementById("cheight").value = parseInt(document.getElementById("cwidth").value) + 100;
 	}
- 
+
 </script>
 
 <html>
@@ -585,7 +586,6 @@
    <head>
     	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title>Radarchart</title>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<style>
 			input[class="snumber"]{
 				width: 30px;
@@ -783,10 +783,8 @@
 				
 				<script>
 					fillFW();
-					var currentel = null;
-					$('input').focus(function(event) {
-						currentel = this;
-						setTimeout(function(){currentel.setSelectionRange(0, 9999);},30);
+					$("input").blur(function() {
+						drawPlot();
 					});
 				</script>
 			
