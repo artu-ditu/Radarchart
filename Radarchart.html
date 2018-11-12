@@ -27,7 +27,7 @@
 	fwLabels[8] = new StatInfo("Wykreowane szanse",0.5,1.9);
 	fwLabels[9] = new StatInfo("Udane dryblingi%",30,70);
 	fwLabels[10] = new StatInfo("Udane dryblingi",0.3,2.5);
-	fwLabels[11] = new StatInfo("Odbiory i przechwyty",0.3,2.2);
+	fwLabels[11] = new StatInfo("Akcje w destrukcji PAdj",1,4.1);
 	fwLabels[12] = new StatInfo("Skuteczność strzałów%",10,30);
 	
 	var amLabels = new Array();
@@ -42,7 +42,7 @@
 	amLabels[8] = new StatInfo("Celność długich podań%",31,75);
 	amLabels[9] = new StatInfo("Udane dryblingi%",44,76);
 	amLabels[10] = new StatInfo("Udane dryblingi",0.6,3.4);
-	amLabels[11] = new StatInfo("Odbiory i przechwyty",0.9,3.7);
+	amLabels[11] = new StatInfo("Akcje w destrukcji PAdj",1.7,5.1);
 	amLabels[12] = new StatInfo("Skuteczność strzałów%",4,26);
 	
 	var cmLabels = new Array();
@@ -170,10 +170,7 @@
 				if(templateStats[count].statName.substr(templateStats[count].statName.length - 1) != "%")
 					playerStats[count] = playerStats[count] * 90 / minutes;
 
-				if(templateStats[count].statName == "Udane odbiory PAdj"
-					|| templateStats[count].statName == "Przechwyty PAdj" 
-					|| templateStats[count].statName == "Zablokowane podania PAdj" 
-					|| templateStats[count].statName == "Wybicia PAdj") 
+				if(templateStats[count].statName.substr(templateStats[count].statName.length - 4) == "PAdj") 
 					playerStats[count] = playerStats[count] * 2/(1 + Math.pow(2.71828,(-0.1*(document.getElementById("possession").value-50))));
 				
 				if(templateStats[count].statName == "Bloki/strzały")
