@@ -115,31 +115,40 @@
 
 		return getWidthOfText.ctx.measureText(txt).width;
 	}
+
+	function getRGB(str){
+		var match = str.match(/rgba?\((\d{1,3}), ?(\d{1,3}), ?(\d{1,3})\)?(?:, ?(\d(?:\.\d?))\))?/);
+		return match ? {
+			red: match[1],
+			green: match[2],
+			blue: match[3],
+			sum: parseInt(match[1])+parseInt(match[2])+parseInt(match[3])
+		} : {};
+	}
+
+	function add(a, b) {
+		return a + b;
+	}
 	
 	function reassign() {
 	
 		canvasHeight = parseInt(document.getElementById("cheight").value); 
 		canvasWidth = parseInt(document.getElementById("cwidth").value);
 		
-		canvasRed1 = parseInt(document.getElementById("redRGB1").value); 
-		canvasGreen1 = parseInt(document.getElementById("greenRGB1").value);
-		canvasBlue1 = parseInt(document.getElementById("blueRGB1").value);
+		canvasColor1 = document.getElementById("canvasColor1").value; 
+		canvasColor2 = document.getElementById("canvasColor2").value;
 		
-		canvasRed2 = parseInt(document.getElementById("redRGB2").value); 
-		canvasGreen2 = parseInt(document.getElementById("greenRGB2").value);
-		canvasBlue2 = parseInt(document.getElementById("blueRGB2").value);
-		
-		if(canvasRed1+canvasGreen1+canvasBlue1 <= canvasRed2+canvasGreen2+canvasBlue2){
-			playerColor1 = "rgba(" + canvasRed1 + ", " + canvasGreen1 + ", " + canvasBlue1 + ", 0.8)";
-			playerColor2 = "rgba(" + canvasRed2 + ", " + canvasGreen2 + ", " + canvasBlue2 + ", 0.8)";
-			playerColor1noalpha = "rgba(" + canvasRed1 + ", " + canvasGreen1 + ", " + canvasBlue1 + ", 1)";
-			playerColor2noalpha = "rgba(" + canvasRed2 + ", " + canvasGreen2 + ", " + canvasBlue2 + ", 1)";
+		if(getRGB(canvasColor1).sum <= getRGB(canvasColor2).sum){
+			playerColor1 = canvasColor1.replace(')', ', 0.8)').replace('rgb', 'rgba');
+			playerColor2 = canvasColor2.replace(')', ', 0.8)').replace('rgb', 'rgba');
+			playerColor1noalpha = canvasColor1.replace(')', ', 1)').replace('rgb', 'rgba');
+			playerColor2noalpha = canvasColor2.replace(')', ', 1)').replace('rgb', 'rgba');
 		}
 		else{
-			playerColor2 = "rgba(" + canvasRed1 + ", " + canvasGreen1 + ", " + canvasBlue1 + ", 0.8)";
-			playerColor1 = "rgba(" + canvasRed2 + ", " + canvasGreen2 + ", " + canvasBlue2 + ", 0.8)";
-			playerColor2noalpha = "rgba(" + canvasRed1 + ", " + canvasGreen1 + ", " + canvasBlue1 + ", 1)";
-			playerColor1noalpha = "rgba(" + canvasRed2 + ", " + canvasGreen2 + ", " + canvasBlue2 + ", 1)";
+			playerColor2 = canvasColor1.replace(')', ', 0.8)').replace('rgb', 'rgba');
+			playerColor1 = canvasColor2.replace(')', ', 0.8)').replace('rgb', 'rgba');
+			playerColor2noalpha = canvasColor1.replace(')', ', 1)').replace('rgb', 'rgba');
+			playerColor1noalpha = canvasColor2.replace(')', ', 1)').replace('rgb', 'rgba');
 		}
 		
 		templateStats = new Array();
@@ -759,15 +768,11 @@
 				<br>
 				color1:
 				<br>
-				R: <input onClick="this.select();" id="redRGB1" value="205" type="text" class="snumber">
-				G: <input onClick="this.select();" id="greenRGB1" value="0" type="text" class="snumber">
-				B: <input onClick="this.select();" id="blueRGB1" value="30" type="text" class="snumber">
+				RGB: <input onClick="this.select();" id="canvasColor1" value="rgb(205, 0, 30)" type="text" class="sinfo">
 				<br>
 				color2:
 				<br>
-				R: <input onClick="this.select();" id="redRGB2" value="60" type="text" class="snumber">
-				G: <input onClick="this.select();" id="greenRGB2" value="180" type="text" class="snumber">
-				B: <input onClick="this.select();" id="blueRGB2" value="180" type="text" class="snumber">
+				RGB: <input onClick="this.select();" id="canvasColor2" value="rgb(60, 180, 180)" type="text" class="sinfo">
 				<br>
 				<br>
 				width: <input onClick="this.select();" onblur="setMinSize();" id="cwidth" value="700" min="700" type="number" class="sinfo">
