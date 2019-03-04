@@ -15,80 +15,80 @@
 		this.statMax = statMax;
 	}
 	
-	var fwLabels = new Array();
-	fwLabels[0] = new StatInfo("Non-Penalty Goals",0.16,0.72);
-	fwLabels[1] = new StatInfo("Strzały",1.6,4.4);
-	fwLabels[2] = new StatInfo("Strzały w polu karnym",1.3,3.3);
-	fwLabels[3] = new StatInfo("Strzały w polu bramkowym",0.08,0.56);
-	fwLabels[4] = new StatInfo("Strzały z otwartej gry",1.1,3.2);
-	fwLabels[5] = new StatInfo("Celność strzałów%",38,66);
-	fwLabels[6] = new StatInfo("Celność podań%",56,80);
-	fwLabels[7] = new StatInfo("Asysty",0.03,0.27);
-	fwLabels[8] = new StatInfo("Wykreowane szanse",0.5,1.9);
-	fwLabels[9] = new StatInfo("Udane dryblingi%",30,70);
-	fwLabels[10] = new StatInfo("Udane dryblingi",0.3,2.5);
-	fwLabels[11] = new StatInfo("Akcje w destrukcji PAdj",1,4.1);
-	fwLabels[12] = new StatInfo("Skuteczność strzałów%",10,30);
-	
-	var amLabels = new Array();
-	amLabels[0] = new StatInfo("Non-Penalty Goals",0.04,0.48);
-	amLabels[1] = new StatInfo("Strzały",0.9,3.5);
-	amLabels[2] = new StatInfo("Strzały w polu karnym",0.5,2.3);
-	amLabels[3] = new StatInfo("Celność podań%",67,87);
-	amLabels[4] = new StatInfo("Asysty",0.05,0.41);
-	amLabels[5] = new StatInfo("Wykreowane szanse",0.9,3.3);
-	amLabels[6] = new StatInfo("Wyk. szanse z otwartej gry",0.7,2.5);
-	amLabels[7] = new StatInfo("Celne długie podania",0.4,3);
-	amLabels[8] = new StatInfo("Celność długich podań%",31,75);
-	amLabels[9] = new StatInfo("Udane dryblingi%",44,76);
-	amLabels[10] = new StatInfo("Udane dryblingi",0.6,3.4);
-	amLabels[11] = new StatInfo("Akcje w destrukcji PAdj",1.7,5.1);
-	amLabels[12] = new StatInfo("Skuteczność strzałów%",4,26);
-	
-	var cmLabels = new Array();
-	cmLabels[0] = new StatInfo("Celność podań%",74,90);
-	cmLabels[1] = new StatInfo("Wykreowane szanse",0.3,2.3);
-	cmLabels[2] = new StatInfo("Asysty + NPG",0,0.4);
-	cmLabels[3] = new StatInfo("Strzały",0.5,2.3);
-	cmLabels[4] = new StatInfo("Udane dryblingi",0.3,2.2);
-	cmLabels[5] = new StatInfo("Utraty posiadania",2.1,0.5);
-	cmLabels[6] = new StatInfo("Faule",2.6,0.6);
-	cmLabels[7] = new StatInfo("Udane odbiory%",50,74);
-	cmLabels[8] = new StatInfo("Udane odbiory PAdj",1.0,3.3);
-	cmLabels[9] = new StatInfo("Przechwyty PAdj",0.5,2.0);
-	cmLabels[10] = new StatInfo("Zablokowane podania PAdj",0.4,1.6);
-	cmLabels[11] = new StatInfo("Celność długich podań%",45,77);
-	cmLabels[12] = new StatInfo("Celne długie podania",1.2,6);
-	
-	var fbLabels = new Array();
-	fbLabels[0] = new StatInfo("Udane odbiory PAdj",1,3);
-	fbLabels[1] = new StatInfo("Przechwyty PAdj",1,2.4);
-	fbLabels[2] = new StatInfo("Celność podań%",70,86);
-	fbLabels[3] = new StatInfo("Celne długie podania",1,3.5);
-	fbLabels[4] = new StatInfo("Asysty + NPG",0.03,0.33);
-	fbLabels[5] = new StatInfo("Wykreowane szanse",0.3,1.6);
-	fbLabels[6] = new StatInfo("Celne dośrodkowania",0.4,1.2);
-	fbLabels[7] = new StatInfo("Celność dośrodkowań%",13,33);
-	fbLabels[8] = new StatInfo("Udane dryblingi",0.4,1.6);
-	fbLabels[9] = new StatInfo("Utraty posiadania",1.4,0.2);
-	fbLabels[10] = new StatInfo("Wygrane w powietrzu",0.5,2.5);
-	fbLabels[11] = new StatInfo("Faule",2.1,0.5);
-	fbLabels[12] = new StatInfo("Udane odbiory%",60,84);
-	
-	var cbLabels = new Array();
-	cbLabels[0] = new StatInfo("Celność podań%",70,90);
-	cbLabels[1] = new StatInfo("Udane odbiory%",64,88);
-	cbLabels[2] = new StatInfo("Udane odbiory PAdj",0.8,2.5);
-	cbLabels[3] = new StatInfo("Przechwyty PAdj",1,2.4);
-	cbLabels[4] = new StatInfo("Wybicia PAdj",2.8,8);
-	cbLabels[5] = new StatInfo("Bloki/strzały",0.033,0.085);
-	cbLabels[6] = new StatInfo("Faule",1.86,0.42);
-	cbLabels[7] = new StatInfo("Utraty posiadania",0.45,0.03);
-	cbLabels[8] = new StatInfo("Wygrane w powietrzu%",52,76);
-	cbLabels[9] = new StatInfo("Wygrane w powietrzu",1.2,4);
-	cbLabels[10] = new StatInfo("Wykreowane szanse",0.03,0.41);
-	cbLabels[11] = new StatInfo("Celność długich podań%",40,76);
-	cbLabels[12] = new StatInfo("Celne długie podania",2,6.4);
+    var fwLabels = new Array();
+    fwLabels[0] = new StatInfo("Gole bez rzutów karnych",0.19,0.66);
+    fwLabels[1] = new StatInfo("Strzały",1.69,3.72);
+    fwLabels[2] = new StatInfo("Strzały w polu karnym",1.00,2.40);
+    fwLabels[3] = new StatInfo("Strzały w polu bramkowym",0.13,0.51);
+    fwLabels[4] = new StatInfo("Strzały z otwartej gry",1.19,2.66);
+    fwLabels[5] = new StatInfo("Celność strzałów%",43.0,63.6);
+    fwLabels[6] = new StatInfo("Celność podań%",60.2,79.4);
+    fwLabels[7] = new StatInfo("Asysty",0.04,0.25);
+    fwLabels[8] = new StatInfo("Wykreowane szanse",0.63,1.66);
+    fwLabels[9] = new StatInfo("Skuteczność dryblingów%",30.8,64.8);
+    fwLabels[10] = new StatInfo("Udane dryblingi",0.35,2.04);
+	fwLabels[11] = new StatInfo("Akcje w destrukcji PAdj",0.83,2.81);
+    fwLabels[12] = new StatInfo("Skuteczność strzałów%",11.0,28.9);
+    
+    var amLabels = new Array();
+    amLabels[0] = new StatInfo("Gole bez rzutów karnych",0.06,0.41);
+    amLabels[1] = new StatInfo("Strzały",1.23,3.02);
+    amLabels[2] = new StatInfo("Strzały w polu karnym",0.58,1.71);
+    amLabels[3] = new StatInfo("Celność podań%",66.7,84.3);
+    amLabels[4] = new StatInfo("Asysty",0.05,0.35);
+    amLabels[5] = new StatInfo("Wykreowane szanse",0.86,2.84);
+    amLabels[6] = new StatInfo("Wyk. szanse z otwartej gry",0.78,2.1);
+    amLabels[7] = new StatInfo("Celne długie podania",0.49,2.63);
+    amLabels[8] = new StatInfo("Celność długich podań%",34.7,70.8);
+    amLabels[9] = new StatInfo("Skuteczność dryblingów%",37.5,68.6);
+    amLabels[10] = new StatInfo("Udane dryblingi",0.63,3.02);
+	amLabels[11] = new StatInfo("Akcje w destrukcji PAdj",1.88,4.79);
+    amLabels[12] = new StatInfo("Skuteczność strzałów%",5.6,23.9);
+    
+    var cmLabels = new Array();
+    cmLabels[0] = new StatInfo("Celność podań%",75.1,88.6);
+    cmLabels[1] = new StatInfo("Wykreowane szanse",0.34,1.8);
+    cmLabels[2] = new StatInfo("Asysty + gole bez rz. karnych",0,0.36);
+    cmLabels[3] = new StatInfo("Strzały",0.41,1.83);
+    cmLabels[4] = new StatInfo("Udane dryblingi",0.25,1.53);
+    cmLabels[5] = new StatInfo("Utraty posiadania",1.89,0.43);
+    cmLabels[6] = new StatInfo("Faule",2.18,0.73);
+    cmLabels[7] = new StatInfo("Udane odbiory%",51.1,76.6);
+    cmLabels[8] = new StatInfo("Udane odbiory PAdj",1.26,3.8);
+    cmLabels[9] = new StatInfo("Przechwyty PAdj",0.82,3.0);
+    cmLabels[10] = new StatInfo("Zablokowane podania PAdj",0.48,1.62);
+    cmLabels[11] = new StatInfo("Celność długich podań%",43.7,70.8);
+    cmLabels[12] = new StatInfo("Celne długie podania",1.45,5.01);
+    
+    var fbLabels = new Array();
+    fbLabels[0] = new StatInfo("Udane odbiory PAdj",1.23,3.03);
+    fbLabels[1] = new StatInfo("Przechwyty PAdj",0.84,2.54);
+    fbLabels[2] = new StatInfo("Celność podań%",68.9,84.8);
+    fbLabels[3] = new StatInfo("Celne długie podania",1.12,3.46);
+    fbLabels[4] = new StatInfo("Asysty + gole bez rz. karnych",0,0.27);
+    fbLabels[5] = new StatInfo("Wykreowane szanse",0.39,1.48);
+    fbLabels[6] = new StatInfo("Celne dośrodkowania",0.24,1.26);
+    fbLabels[7] = new StatInfo("Celność dośrodkowań%",13.6,29.9);
+    fbLabels[8] = new StatInfo("Udane dryblingi",0.18,1.32);
+    fbLabels[9] = new StatInfo("Utraty posiadania",1.03,0.23);
+    fbLabels[10] = new StatInfo("Wygrane w powietrzu",0.7,2.49);
+    fbLabels[11] = new StatInfo("Faule",1.42,0.57);
+    fbLabels[12] = new StatInfo("Udane odbiory%",64.1,81.7);
+    
+    var cbLabels = new Array();
+    cbLabels[0] = new StatInfo("Celność podań%",72.4,88.4);
+    cbLabels[1] = new StatInfo("Udane odbiory%",66.1,85.2);
+    cbLabels[2] = new StatInfo("Udane odbiory PAdj",0.83,2.6);
+    cbLabels[3] = new StatInfo("Przechwyty PAdj",1.05,2.87);
+    cbLabels[4] = new StatInfo("Wybicia PAdj",3.2,7.55);
+    cbLabels[5] = new StatInfo("Bloki/strzały",0.034,0.08);
+    cbLabels[6] = new StatInfo("Faule",1.52,0.5);
+    cbLabels[7] = new StatInfo("Utraty posiadania",0.4,0.04);
+    cbLabels[8] = new StatInfo("Wygrane w powietrzu%",52.4,68.4);
+    cbLabels[9] = new StatInfo("Wygrane w powietrzu",1.82,4.05);
+    cbLabels[10] = new StatInfo("Wykreowane szanse",0.07,0.37);
+    cbLabels[11] = new StatInfo("Celność długich podań%",37.3,57.6);
+    cbLabels[12] = new StatInfo("Celne długie podania",2.08,5.11);
 	
 	var templateStats = fwLabels;
 	var canvasHeight = 800;
@@ -405,8 +405,10 @@
 					-canvasHeight/2 + 78);
 		
 		ctx.font = "bold 14px Calibri";
-		ctx.fillText("@DavtyanR2", -Math.floor(getWidthOfText("@DavtyanR2",'bold 14px Calibri')/2), canvasHeight/2 - 22);
-		ctx.fillText("via whoscored", -Math.floor(getWidthOfText("via whoscored",'bold 14px Calibri')/2), canvasHeight/2 - 5);
+		var textUp = "@DavtyanR2";
+		var textDown = "Artur Davtyan"
+		ctx.fillText(textUp, -Math.floor(getWidthOfText(textUp,'bold 14px Calibri')/2), canvasHeight/2 - 22);
+		ctx.fillText(textDown, -Math.floor(getWidthOfText(textDown,'bold 14px Calibri')/2), canvasHeight/2 - 5);
 		ctx.restore();
 	
 		//rysowanie labeli
